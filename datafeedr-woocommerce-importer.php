@@ -1,0 +1,768 @@
+<?php
+/*
+Plugin Name: Datafeedr WooCommerce Importer
+Version: 0.9.3
+Plugin URI: https://v4.datafeedr.com
+Description: Import products from the Datafeedr Product Sets plugin into your WooCommerce store. <strong>REQUIRES: </strong><a href="http://wordpress.org/plugins/datafeedr-api/">Datafeedr API plugin</a>, <a href="http://wordpress.org/plugins/datafeedr-product-sets/">Datafeedr Product Sets plugin</a>, <a href="https://github.com/woothemes/woocommerce/releases">WooCommerce v2.1.0-beta-1 (or greater)</a>.
+Author: Datafeedr
+Author URI: https://v4.datafeedr.com
+License: GPL v3
+Requires at least: 3.8
+Tested up to: 3.8.1
+
+Datafeedr API Plugin
+Copyright (C) 2013, Datafeedr - api@datafeedr.com
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+ 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+/**
+ * Define constants.
+ */
+define( 'DFRPSWC_VERSION', 		'0.9.3' );
+define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
+define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
+define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
+define( 'DFRPSWC_DOMAIN', 		'dfrpswc_integration' );
+define( 'DFRPSWC_POST_TYPE', 	'product' );
+define( 'DFRPSWC_TAXONOMY', 	'product_cat' );
+
+/*******************************************************************
+ADMIN NOTICES
+*******************************************************************/
+
+/**
+ * Notify user that this plugin has been deactivated
+ * because one of the plugins it requires is not active.
+ */
+add_action( 'admin_notices', 'dfrpswc_missing_required_plugins' );
+function dfrpswc_missing_required_plugins() {
+	
+	if ( !defined( 'DFRPS_BASENAME' ) ) {
+		echo '<div class="update-nag" style="border-color: red;"><p>' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>Datafeedr Product Sets</strong> plugin be installed and activated.', DFRPSWC_DOMAIN );
+		echo ' <a href="http://wordpress.org/plugins/datafeedr-product-sets/">';
+		echo  __( 'Download the Datafeedr Product Sets Plugin', DFRPSWC_DOMAIN );
+		echo '</a></p></div>';
+	}
+	
+	if ( !class_exists( 'Woocommerce' ) ) {
+		echo '<div class="update-nag" style="border-color: red;"><p>' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>WooCommerce v2.1.0-beta-1 or greater</strong> plugin be installed and activated.', DFRPSWC_DOMAIN );
+		echo ' <a href="https://github.com/woothemes/woocommerce/releases">';
+		echo  __( 'Download the WooCommerce Plugin', DFRPSWC_DOMAIN );
+		echo '</a></p></div>';
+	}
+}
+
+/**
+ * Display admin notices upon update.
+ */
+add_action( 'admin_notices', 'dfrpswc_settings_updated' );	
+function dfrpswc_settings_updated() {
+	if ( $_GET['settings-updated'] == true && 'dfrpswc_options' == $_GET['page'] ) {
+		echo '<div class="updated"><p>';
+		_e( 'Configuration successfully updated!', DFRPSWC_DOMAIN );
+		echo '</p></div>';
+	}
+}
+
+/*******************************************************************
+REGISTER CUSTOM POST TYPE FOR PRODUCT SETS
+*******************************************************************/
+
+/**
+ * This registers the third party integration's Custom
+ * Post Type with the Datafeedr Product Sets plugin.
+ */
+add_action( 'init', 'dfrpswc_register_cpt' );
+function dfrpswc_register_cpt() {
+	if ( function_exists( 'dfrps_register_cpt' ) ) {
+		$args = array(
+			'taxonomy' 			=> DFRPSWC_TAXONOMY,
+			'name' 				=> _x( 'WooCommerce Products', DFRPSWC_DOMAIN ),
+			'tax_name'			=> _x( 'WooCommerce Categories', DFRPSWC_DOMAIN ),
+			'tax_instructions' 	=> _x( 'Add this Product Set to a Product Category.', DFRPSWC_DOMAIN ),
+		);
+		dfrps_register_cpt( DFRPSWC_POST_TYPE, $args );
+	}
+}
+	
+/**
+ * This unregisters the third party integration's Custom
+ * Post Type from the Datafeedr Product Sets plugin. This
+ * must be unregistered using the register_deactivation_hook()
+ * hook.
+ */
+register_deactivation_hook( __FILE__, 'dfrpswc_unregister_cpt' );
+function dfrpswc_unregister_cpt() {
+	if ( function_exists( 'dfrps_unregister_cpt' ) ) {
+		dfrps_unregister_cpt( DFRPSWC_POST_TYPE );
+	}
+}
+
+
+/*******************************************************************
+BUILD ADMIN OPTIONS PAGE
+*******************************************************************/
+
+/**
+ * Add settings page.
+ */
+add_action( 'admin_menu', 'dfrpswc_admin_menu', 999 );	
+function dfrpswc_admin_menu() {
+
+	add_submenu_page(
+		'dfrps',
+		__( 'WooCommerce Product Import Options', DFRPSWC_DOMAIN ), 
+		__( 'WC Importer', DFRPSWC_DOMAIN ), 
+		'manage_options', 
+		'dfrpswc_options',
+		'dfrpswc_options_output'
+	);
+}
+
+/**
+ * Get current options or set default ones.
+ */
+function dfrpswc_get_options() {
+	$options = get_option( 'dfrpswc_options', array() );
+	if ( empty( $options ) ) {
+		$options = array();
+		$options['button_text'] = __( 'Buy Now', DFRPSWC_DOMAIN );
+		update_option( 'dfrpswc_options', $options );
+	}
+	return $options;
+}
+
+/**
+ * Build settings page.
+ */
+function dfrpswc_options_output() {
+	echo '<div class="wrap" id="dfrpswc_options">';
+	echo '<h2>' . __( 'WooCommerce Product Import Options', DFRPSWC_DOMAIN ) . '</h2>';
+	echo '<form method="post" action="options.php">';
+	wp_nonce_field( 'dfrpswc-update-options' );
+	settings_fields( 'dfrpswc_options-page' );
+	do_settings_sections( 'dfrpswc_options-page' );
+	submit_button();
+	echo '</form>';		
+	echo '</div>';
+}
+
+/**
+ * Register settings.
+ */
+add_action( 'admin_init', 'dfrpswc_register_settings' );
+function dfrpswc_register_settings() {		
+	register_setting( 'dfrpswc_options-page', 'dfrpswc_options', 'dfrpswc_validate' );
+	add_settings_section( 'dfrpswc_general_settings', __( 'General Settings', DFRPSWC_DOMAIN ), 'dfrpswc_general_settings_section', 'dfrpswc_options-page' );
+	add_settings_field( 'dfrpswc_button_text', __( 'Button Text', DFRPSWC_DOMAIN ), 'dfrpswc_button_text_field', 'dfrpswc_options-page', 'dfrpswc_general_settings' );
+}
+
+/**
+ * General settings section description.
+ */
+function dfrpswc_general_settings_section() { 
+	echo __( 'General settings for importing products into your WooCommerce store.', DFRPSWC_DOMAIN );
+}
+
+/**
+ * Button Text field.
+ */
+function dfrpswc_button_text_field() { 
+	$options = dfrpswc_get_options();
+	echo '<input type="text" class="regular-text" name="dfrpswc_options[button_text]" value="' . esc_attr( $options['button_text'] ) . '" />';
+	echo '<p class="description">' . __( 'The text on the button which links to the merchant\'s website.', DFRPSWC_DOMAIN ) . '</p>';
+}
+
+/**
+ * Validate user's input and save.
+ */
+function dfrpswc_validate( $input ) {
+	if ( !isset( $input ) || !is_array( $input ) || empty( $input ) ) { return $input; }
+
+	$new_input = array();
+	foreach( $input as $key => $value ) {					
+		if ( $key == 'button_text' ) {
+			$new_input['button_text'] = trim( $value );
+		}
+	}
+	return $new_input;
+}
+
+/**
+ * Change Button Text for DFRPSWC imported products.
+ */
+add_filter( 'woocommerce_product_add_to_cart_text', 'dfrpswc_single_add_to_cart_text', 10, 2 );
+add_filter( 'woocommerce_product_single_add_to_cart_text', 'dfrpswc_single_add_to_cart_text', 10, 2 );
+function dfrpswc_single_add_to_cart_text( $button_text, $type ) {
+	global $product;
+	if ( $type->product_type != 'external' ) { return $button_text; }
+	if ( !dfrpswc_is_dfrpswc_product( $product->id ) ) { return $button_text; }
+	$options = dfrpswc_get_options();
+	if ( $options['button_text'] != '' ) {
+		$button_text = $options['button_text'];
+	}
+	return $button_text;
+}
+
+
+/*******************************************************************
+UPDATE FUNCTIONS
+*******************************************************************/
+
+/**
+ * Return TRUE if finished unsetting categories.
+ * Return FALSE if not finished.
+ * 
+ * This unsets products from their categories before updating products.
+ * 
+ * Why?
+ * 
+ * We need to remove all products which were imported via a product set
+ * from the categories they were added to when they were imported 
+ * so that at the end of the update, if these products weren't re-imported
+ * during the update, the post/product's category information (for this
+ * set) will no longer be available so that if this post/product was 
+ * added via another Product Set, only that Product Set's category IDs
+ * will be attributed to this post/product.
+ * 
+ * This processes batches at a time as this is a server/time
+ * intensive process.
+ */
+add_action( 'dfrps_preprocess', 'dfrpswc_unset_post_categories' );
+function dfrpswc_unset_post_categories( $obj ) {
+
+	// Get posts to unset categories for.
+	$posts = get_option( 'unset_post_categories_'.DFRPSWC_POST_TYPE.'_for_set_' . $obj->set['ID'] );
+	
+	/**
+	 * If $posts does not exist (ie. FALSE) 
+	 *    and
+	 * If the the status of preprocess is FALSE
+	 *    then
+	 * Get all post IDs (as an array) set by this Product Set
+	 * and set them to 'unset_post_categories_{product}_for_set_XXX'
+	 * in the options table. That way we don't have to run the 
+	 * dfrps_get_all_post_ids_by_set_id() query again and we can 
+	 * incrementally remove post IDs from this array of IDs as we
+	 * get ready for updating.
+	 */
+	if ( !$posts && !dfrpswc_process_complete( 'preprocess', $obj->set['ID'] ) ) {
+		$posts = dfrps_get_all_post_ids_by_set_id( $obj->set['ID'] );
+		update_option( 'unset_post_categories_'.DFRPSWC_POST_TYPE.'_for_set_' . $obj->set['ID'], $posts );
+	}
+	
+	/**
+	 * If $posts contains post IDs, we will grab the first X number of 
+	 * IDs from the array (where X is "preprocess_maximum") and remove
+	 * the category IDs from these posts where the category IDs match
+	 * the IDs which were selected when creating the Product Set.
+	 * 
+	 * After the category ID is removed, we also remove the "_dfrps_product_set_id"
+	 * so that we can find this product later and delete it if it is no 
+	 * longer associated with a Product Set.
+	 * 
+	 * Lastly, we remove each processed post ID from the $posts array.
+	 */
+	if ( is_array( $posts ) && !empty( $posts ) ) {
+		$config = (array) get_option( 'dfrps_configuration' );
+		$ids = array_slice( $posts, 0, $config['preprocess_maximum'] );
+		foreach ( $ids as $id ) {
+			dfrps_remove_category_ids_from_post( $id, $obj->set, DFRPSWC_POST_TYPE, DFRPSWC_TAXONOMY );
+			delete_post_meta( $id, '_dfrps_product_set_id', $obj->set['ID'] );
+			if ( ( $key = array_search( $id, $posts ) ) !== false ) {
+				unset( $posts[$key] );
+			}
+		}
+	}
+	
+	/**
+	 * Now we need to check if there are more post IDs to process.
+	 * 
+	 * If $posts is empty, then we are done with the "preprocess" stage.
+	 *    - Set "_dfrps_preprocess_complete_" to TRUE
+	 *    - Delete the 'unset_post_categories_{product}_for_set_XXX' so 
+	 *      no longer attempt to process it.
+	 * 
+	 * If $posts is NOT empty, we update 'unset_post_categories_{product}_for_set_XXX'
+	 * with our reduced $posts array and let the "preprocess" run again.
+	 */
+	if ( empty( $posts ) ) {
+		update_post_meta( $obj->set['ID'], '_dfrps_preprocess_complete_' . DFRPSWC_POST_TYPE, true );
+		delete_option( 'unset_post_categories_'.DFRPSWC_POST_TYPE.'_for_set_' . $obj->set['ID'] );
+	} else {
+		update_option( 'unset_post_categories_'.DFRPSWC_POST_TYPE.'_for_set_' . $obj->set['ID'], $posts );
+	}
+}
+
+/**
+ * Adds the action "dfrps_action_do_products_{cpt}" where
+ * {cpt} is the post_type you are inserting products into.
+ */
+add_action( 'dfrps_action_do_products_' . DFRPSWC_POST_TYPE, 'dfrpswc_do_products', 10, 2 );
+function dfrpswc_do_products( $data, $set ) {
+
+	// Check if there are products available.
+	if ( !isset( $data['products'] ) || empty( $data['products'] ) ) { return; }
+	
+	// Loop thru products.
+	foreach ( $data['products'] as $product ) {
+		
+		// Get post if it already exists.
+		$existing_post = dfrps_get_existing_post( $product, $set );
+
+		// Determine what to do based on if post exists or not.
+		if ( $existing_post && $existing_post['post_type'] == DFRPSWC_POST_TYPE ) {
+			$action = 'update';
+			$post = dfrpswc_update_post( $existing_post, $product, $set, $action );
+		} else {
+			$action = 'insert';
+			$post = dfrpswc_insert_post( $product, $set, $action );
+		}
+		
+		// Handle other facets for this product such as postmeta, terms and attributes.
+		if ( $post ) {
+			dfrpswc_update_terms( $post, $product, $set, $action );
+			dfrpswc_update_postmeta( $post, $product, $set, $action );
+			dfrpswc_update_attributes( $post, $product, $set, $action );
+		}		
+	}
+}
+
+/**
+ * This updates a post.
+ * 
+ * This should return a FULL $post object in ARRAY_A format.
+ */
+function dfrpswc_update_post( $existing_post, $product, $set, $action ) {
+
+	$post = array(
+		'ID' 			=> $existing_post['ID'],
+		'post_title' 	=> @$product['name'],
+		'post_content' 	=> @$product['description'],
+		'post_excerpt' 	=> @$product['shortdescription'],
+	  	'post_status'   => 'publish',
+	);
+	
+	// Apply any custom filters.
+	$post = apply_filters( 'dfrpswc_filter_post_array', $post, $product, $set, $action );
+	wp_update_post( $post );
+	return $post;
+}
+
+/**
+ * This inserts a new post.
+ *
+ * This should return a FULL $post object in ARRAY_A format.
+ */
+function dfrpswc_insert_post( $product, $set, $action ) {
+	
+	$post = array(
+		'post_title'    => @$product['name'],
+		'post_content'  => @$product['description'],
+		'post_excerpt' 	=> @$product['shortdescription'],
+		'post_status'   => 'publish',
+		'post_author'   => $set['post_author'],
+		'post_type'	  	=> DFRPSWC_POST_TYPE,
+	);
+
+	// Apply any custom filters.
+	$post = apply_filters( 'dfrpswc_filter_post_array', $post, $product, $set, $action );
+	$id = wp_insert_post( $post );		
+	$post['ID'] = $id;
+	return $post;
+}
+
+/**
+ * Update the postmeta for this product.
+ */
+function dfrpswc_update_postmeta( $post, $product, $set, $action ) {
+
+	$meta = array();
+	
+	$meta['_visibility'] 				= 'visible';
+	$meta['_stock'] 					= '';
+	$meta['_downloadable'] 				= 'no';
+	$meta['_virtual'] 					= 'no';
+	$meta['_backorders'] 				= 'no';
+	$meta['_stock_status'] 				= 'instock';
+	$meta['_product_type'] 				= 'external';
+	$meta['_product_url'] 				= $product['url'];
+	$meta['_sku'] 						= $product['_id'];
+	$meta['_product_attributes'] 		= array();
+	$meta['_dfrps_is_dfrps_product'] 	= true;
+	$meta['_dfrps_is_dfrpswc_product'] 	= true;
+	$meta['_dfrps_product_id'] 			= $product['_id'];
+	$meta['_dfrps_product'] 			= $product; // This stores all info about the product in 1 array.
+
+	// Update image check field.
+	$meta['_dfrps_product_check_image'] = 1;
+	
+	// Set featured image url (if there's an image)
+	if ( @$product['image'] != '' ) {
+		$meta['_dfrps_featured_image_url'] = @$product['image'];
+	} elseif ( @$product['thumbnail'] != '' ) {
+		$meta['_dfrps_featured_image_url'] = @$product['thumbnail'];
+	}
+	
+	// Handle price.
+	if ( isset( $product['price'] ) ) {
+		$meta['_regular_price'] = dfrps_int_to_price( $product['price'] );
+		$meta['_price'] = dfrps_int_to_price( $product['price'] );
+	}
+	
+	// Handle sale price.
+	if ( $product['onsale'] == 1 ) {
+		$meta['_sale_price'] = dfrps_int_to_price( $product['saleprice'] );
+		$meta['_price'] = dfrps_int_to_price( $product['saleprice'] );
+	}
+	
+	// Handle sale discount.
+	$meta['_dfrps_salediscount'] = ( isset( $product['salediscount'] ) ) ? $product['salediscount'] : 0;
+	
+	$meta = apply_filters( 'dfrpswc_filter_postmeta_array', $meta, $post, $product, $set, $action );
+	
+	$dont_recheck_image = false;
+	foreach ( $meta as $meta_key => $meta_value ) {
+		update_post_meta( $post['ID'], $meta_key, $meta_value );
+	}
+	
+	add_post_meta( $post['ID'], '_dfrps_product_set_id', $set['ID'] );
+}
+
+/**
+ * Update the terms/taxonomy for this product.
+ */
+function dfrpswc_update_terms( $post, $product, $set, $action ) {
+	
+	// Get the IDs of the categories this product is associated with.
+	$ids = array();
+	$cat_ids = get_post_meta( $set['ID'], '_dfrps_cpt_categories', true );
+	if ( isset( $cat_ids[DFRPSWC_POST_TYPE] ) && !empty( $cat_ids[DFRPSWC_POST_TYPE] ) ) {
+		foreach ( $cat_ids[DFRPSWC_POST_TYPE] as $id ) {
+			$ids[] = $id;
+		}		
+	}
+	
+	// Create an array with key of taxonomy and values of terms
+	$taxonomies = array(
+		DFRPSWC_TAXONOMY	=> $ids,
+		'product_tag' 		=> '',
+		'product_type' 		=> 'external',
+	);
+
+	// Then apply filters so users can override
+	$taxonomies = apply_filters( 'dfrpswc_filter_taxonomy_array', $taxonomies, $post, $product, $set, $action );
+
+	// Then iterate over the array using wp_set_post_terms()
+	foreach ( $taxonomies as $taxonomy => $terms ) {
+		$append = ( $taxonomy == DFRPSWC_TAXONOMY ) ? true : false;
+		wp_set_post_terms( $post['ID'], $terms, $taxonomy, $append );
+	}
+}
+
+/**
+ * Update the attributes (unique to WC) for this product.
+ */
+function dfrpswc_update_attributes( $post, $product, $set, $action ) {
+
+	$attributes = array();
+		
+	$attributes = dfrpswc_add_attribute( $product, $attributes, 'source', 'pa_network', 1, 1, 0 );
+	$attributes = dfrpswc_add_attribute( $product, $attributes, 'merchant', 'pa_merchant', 1 );
+	$attributes = dfrpswc_add_attribute( $product, $attributes, 'brand', 'pa_brand', 1 );
+	
+	$attributes = apply_filters( 'dfrpswc_filter_attributes_array', $attributes, $post, $product, $set, $action );
+	
+	/**
+	 * Loop through attributes and use wp_set_object_terms()
+	 * on any attribute with is_taxonomy=1
+	 * to set the term and remove the value from the 'value' field.
+	 */
+	foreach( $attributes as $k => $v ) {
+		if ( $v['is_taxonomy'] == 1 ) {
+			wp_set_object_terms( $post['ID'], $v['value'], $v['name'] );	
+			$v['value'] = '';
+		}
+		unset( $attributes[$k]['field'] ); // Unset field because WC is not expecting that array item.
+	}
+	
+	update_post_meta( $post['ID'], '_product_attributes', $attributes );
+}
+
+/**
+ * This is clean up after the update is finished.  
+ * Here we will:
+ * 
+ * Delete (move to Trash) all products which were "stranded" after the update.
+ * Strandad means they no longer have a Product Set ID associated with them.
+ */
+add_action( 'dfrps_postprocess', 'dfrpswc_delete_stranded_products' );
+function dfrpswc_delete_stranded_products( $obj ) {
+
+	$config = (array) get_option( 'dfrps_configuration' );
+	
+	// Should we even delete missing products?
+	if ( isset( $config['delete_missing_products'] ) && ( $config['delete_missing_products'] == 'no' ) ) {
+		update_post_meta( $obj->set['ID'], '_dfrps_postprocess_complete_' . DFRPSWC_POST_TYPE, true );		
+		return;
+	}
+
+	// If trashable posts are already set for this Set['ID'], then just return.
+	$trashable_posts = get_option( 'trashable_posts_for_set_' . $obj->set['ID'] );
+	 
+	// If we've not run the SQL to get trashable posts, do so now.
+	if ( !$trashable_posts && !dfrpswc_process_complete( 'postprocess', $obj->set['ID'] ) ) {
+	
+		global $wpdb;
+	
+		$posts = $wpdb->get_results( "
+			SELECT pm.post_id
+			FROM $wpdb->postmeta pm
+			LEFT JOIN $wpdb->postmeta pm1
+				ON pm.post_id = pm1.post_id 
+					AND pm1.meta_key = '_dfrps_product_set_id'
+			JOIN $wpdb->posts p
+				ON pm.post_id = p.ID
+			WHERE
+				pm.meta_key = '_dfrps_is_dfrps_product'
+				AND pm.meta_value = 1
+				AND pm1.post_id IS NULL
+				AND p.post_status = 'publish'
+		", ARRAY_A );
+	
+		$post_ids = array();
+		foreach ( $posts as $post ) {
+			$post_ids[] = $post['post_id'];
+		}
+				
+		if ( empty( $post_ids ) ) {
+			update_post_meta( $obj->set['ID'], '_dfrps_postprocess_complete_' . DFRPSWC_POST_TYPE, true );
+			update_post_meta( $obj->set['ID'], '_dfrps_cpt_last_update_num_products_deleted', count( $post_ids ) );
+			return;
+		}		
+		
+		$trashable_posts = $post_ids;
+		add_option( 'trashable_posts_for_set_' . $obj->set['ID'], $post_ids, '', 'no' );
+		update_post_meta( $obj->set['ID'], '_dfrps_cpt_last_update_num_products_deleted', count( $post_ids ) );
+	}
+	
+	if ( is_array( $trashable_posts ) && !empty( $trashable_posts ) ) {
+		$ids = array_slice( $trashable_posts, 0, $config['postprocess_maximum'] );
+		foreach ( $ids as $id ) {
+			wp_trash_post( $id );
+			if ( ( $key = array_search( $id, $trashable_posts ) ) !== false ) {
+				unset( $trashable_posts[$key] );
+			}
+		}
+	}
+	
+	if ( empty( $trashable_posts ) ) {
+		delete_option( 'trashable_posts_for_set_' . $obj->set['ID'] );		
+		update_post_meta( $obj->set['ID'], '_dfrps_postprocess_complete_' . DFRPSWC_POST_TYPE, true );		
+		return;
+	} else {
+		update_option( 'trashable_posts_for_set_' . $obj->set['ID'], $trashable_posts );
+		return;
+	}
+}
+
+
+/*******************************************************************
+INSERT AFFILIATE ID INTO AFFILIATE LINK
+*******************************************************************/
+
+/**
+ * Extend "WC_Product_External" class.
+ * This tells WC to use the "Dfrpswc_Product_External" class if 
+ * a product is an external product.
+ * 
+ * This returns the default class if the WooCommerce Cloak Affiliate Links 
+ * plugin is activated.
+ */
+add_filter( 'woocommerce_product_class', 'dfrpswc_woocommerce_product_class', 40, 4 );
+function dfrpswc_woocommerce_product_class( $classname, $product_type, $post_type, $product_id ) {
+	if ( $classname != 'WC_Product_External' ) 			{ return $classname; }
+	if ( class_exists( 'Wccal' ) ) 						{ return $classname; }
+	if ( !dfrpswc_is_dfrpswc_product( $product_id ) ) 	{ return $classname; }	
+	return 'Dfrpswc_Product_External';
+}
+
+/**
+ * Creates the "Dfrpswc_Product_External" class in order to modify 
+ * the product_url() method.
+ * 
+ * The product_url() method returns the affiliate link with the affiliate
+ * id inserted.
+ * 
+ * This does nothing if the WooCommerce Cloak Affiliate Links 
+ * plugin is activated.
+ */
+add_action( 'plugins_loaded', 'dfrpswc_extend_wc_product_external_class' );
+function dfrpswc_extend_wc_product_external_class() {
+	if ( class_exists( 'WC_Product_External' ) && !class_exists( 'Wccal' ) ) {	
+		class Dfrpswc_Product_External extends WC_Product_External {
+			public function get_product_url() {
+				if ( dfrpswc_is_dfrpswc_product( $this->id ) ) {
+					$product = get_post_meta( $this->id, '_dfrps_product', true );
+					$external_link = dfrapi_url( $product );
+					if ( $external_link != '' ) { 
+						$url = $external_link;
+					} else {
+						$url = get_permalink( $this->id );
+					}					
+					return $url;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * This returns the affiliate link with affiliate ID inserted 
+ * if the WooCommerce Cloak Affiliate Links plugin is activated.
+ */
+add_filter( 'wccal_filter_url', 'dfrpswc_add_affiliate_id_to_url', 20, 2 );
+function dfrpswc_add_affiliate_id_to_url( $external_link, $post_id ) {
+	if ( dfrpswc_is_dfrpswc_product( $post_id ) ) {
+		$product = get_post_meta( $post_id, '_dfrps_product', true );
+		$external_link = dfrapi_url( $product );
+	}
+	return $external_link;
+}
+
+
+/*******************************************************************
+ADD METABOX TO PRODUCT'S EDIT PAGE.
+*******************************************************************/
+
+/**
+ * Add meta box to WC product pages so that a user can
+ * see which product sets added this product.
+ */
+add_action( 'admin_menu', 'dfrpswc_add_meta_box' );
+function dfrpswc_add_meta_box() {
+	add_meta_box(
+		'dfrpswc_product_sets_relationships', 
+		_x( 'Datafeedr Product Sets', DFRPSWC_DOMAIN ), 
+		'dfrpswc_product_sets_relationships_metabox', 
+		DFRPSWC_POST_TYPE, 
+		'side', 
+		'low', 
+		array()
+	);
+}
+
+/**
+ * The metabox content.
+ */
+function dfrpswc_product_sets_relationships_metabox( $post, $box ) {
+	$set_ids = get_post_meta( $post->ID, '_dfrps_product_set_id', false );
+	$set_ids = array_unique( $set_ids );
+	if ( !empty( $set_ids ) ) {
+		echo '<p>' . __( 'This product was added by the following Product Set(s)', DFRPSWC_DOMAIN ) . '</p>';
+		foreach ( $set_ids as $set_id ) {
+			echo '<div><a href="' . get_edit_post_link( $set_id ) . '" title="' . __( 'View this Product Set', DFRPSWC_DOMAIN ) . '">' . get_the_title( $set_id ) . '</a></div>';
+		}
+	} else {
+		echo '<p>' . __( 'This product was not added by a Datafeedr Product Set.', DFRPSWC_DOMAIN ) . '</p>';
+	}
+}
+
+
+/*******************************************************************
+MISCELLANEOUS FUNCTIONS
+*******************************************************************/
+
+/**
+ * Returns true if product was imported by this plugin (Datafeedr WooCommerce Importer)
+ */
+function dfrpswc_is_dfrpswc_product( $product_id ) {
+	if ( get_post_meta( $product_id, '_dfrps_is_dfrpswc_product', true ) != '' ) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * A helper function which allows a user to add additional WooCommerce
+ * attributes to their product.
+ */
+function dfrpswc_add_attribute( $product, $attributes, $field, $taxonomy, $is_taxonomy, $position=1, $is_visible=1, $is_variation=0 ) {
+	if ( isset( $product[$field] ) && ( $product[$field] != '' ) ) {
+		$attributes[$taxonomy] = array(
+			'name' 			=> $taxonomy,
+			'value' 		=> $product[$field],
+			'position' 		=> $position,
+			'is_visible' 	=> $is_visible,
+			'is_variation' 	=> $is_variation,
+			'is_taxonomy' 	=> $is_taxonomy,
+			'field'			=> $field,
+		);
+	}
+	return $attributes;
+}
+
+/**
+ * A helper function to determine if either the preprocess or postprocess
+ * processes are complete.  
+ * 
+ * Returns true if complete, false if not complete.
+ */
+function dfrpswc_process_complete( $process, $set_id ) {
+	$status = get_post_meta( $set_id, '_dfrps_' . $process . '_complete_' . DFRPSWC_POST_TYPE, true );
+	if ( $status == '' ) {
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Add extra links to plugin page.
+ */
+add_filter( 'plugin_row_meta', 'dfrpswc_plugin_row_meta', 10, 2 );
+function dfrpswc_plugin_row_meta( $links, $plugin_file ) {
+	if ( $plugin_file == DFRPSWC_BASENAME ) {
+		$links[] = sprintf( '<a href="' . DFRAPI_HELP_URL . '">%s</a>', __( 'Support', DFRPSWC_DOMAIN ) );
+		return $links;
+	}
+	return $links;
+}
+
+/**
+ * Links to other related or required plugins.
+ */
+function dfrpswc_plugin_links( $plugin ) {
+	$map = array(
+		'dfrapi' => 'http://wordpress.org/plugins/datafeedr-api/',
+		'dfrps' => 'http://wordpress.org/plugins/datafeedr-product-sets/',
+		'woocommerce' => 'http://wordpress.org/plugins/woocommerce/',
+		//'importers' => admin_url( 'plugin-install.php?tab=search&type=term&s=dfrps_importer&plugin-search-input=Search+Plugins' ),
+		'importers' => admin_url( 'plugins.php' ),
+	);
+	return $map[$plugin];
+}
+
+add_filter( 'plugin_action_links_' . DFRPSWC_BASENAME, 'dfrpswc_action_links' );
+function dfrpswc_action_links( $links ) {
+	return array_merge(
+		$links,
+		array(
+			'config' => '<a href="' . admin_url( 'admin.php?page=dfrpswc_options' ) . '">' . __( 'Configuration', DFRPSWC_DOMAIN ) . '</a>',
+		)
+	);
+}
+
