@@ -71,7 +71,7 @@ function dfrpswc_missing_required_plugins() {
  */
 add_action( 'admin_notices', 'dfrpswc_settings_updated' );	
 function dfrpswc_settings_updated() {
-	if ( $_GET['settings-updated'] == true && 'dfrpswc_options' == $_GET['page'] ) {
+	if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true && 'dfrpswc_options' == $_GET['page'] ) {
 		echo '<div class="updated"><p>';
 		_e( 'Configuration successfully updated!', DFRPSWC_DOMAIN );
 		echo '</p></div>';
