@@ -16,6 +16,10 @@ Import products from your Datafeedr Product Sets into your WooCommerce store.
 
 The *Datafeedr WooCommerce Importer* plugin allows you to import products from your Datafeedr Product Sets into your WooCommerce store.
 
+Here's a longish video demonstrating the *Datafeedr WooCommerce Importer* plugin.
+
+[youtube http://www.youtube.com/watch?v=A4j7bwL9v-E]
+
 == Installation ==
 
 This section describes how to install and configure the plugin:
