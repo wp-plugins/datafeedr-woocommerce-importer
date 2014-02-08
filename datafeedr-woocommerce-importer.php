@@ -402,7 +402,6 @@ function dfrpswc_update_postmeta( $post, $product, $set, $action ) {
 	$meta['_product_type'] 				= 'external';
 	$meta['_product_url'] 				= $product['url'];
 	$meta['_sku'] 						= $product['_id'];
-	$meta['_product_attributes'] 		= array();
 	$meta['_dfrps_is_dfrps_product'] 	= true;
 	$meta['_dfrps_is_dfrpswc_product'] 	= true;
 	$meta['_dfrps_product_id'] 			= $product['_id'];
@@ -478,6 +477,8 @@ function dfrpswc_update_terms( $post, $product, $set, $action ) {
  * Update the attributes (unique to WC) for this product.
  */
 function dfrpswc_update_attributes( $post, $product, $set, $action ) {
+
+	// @TODO - rewrite: ~/Development/Datafeedr/wpsvn/wp-content/plugins/woocommerce-2.1.0-RC1/includes/admin/post-types/meta-boxes/class-wc-meta-box-product-data.php (Line #397)
 
 	$attributes = array();
 		
@@ -703,6 +704,7 @@ function dfrpswc_is_dfrpswc_product( $product_id ) {
  */
 function dfrpswc_add_attribute( $product, $attributes, $field, $taxonomy, $is_taxonomy, $position=1, $is_visible=1, $is_variation=0 ) {
 	if ( isset( $product[$field] ) && ( $product[$field] != '' ) ) {
+		// @TODO - add filter for $product[$field] here.
 		$attributes[$taxonomy] = array(
 			'name' 			=> $taxonomy,
 			'value' 		=> $product[$field],
