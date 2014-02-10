@@ -1,7 +1,7 @@
 === Datafeedr WooCommerce Importer ===
 
 Contributors: datafeedrcom
-Tags: woocommerce, datafeedr, affiliate products, importer, dfrapi, dfrps, dfrpsimporter
+Tags: woocommerce, datafeedr, dfrpsimporter, affiliate products, importer, dfrapi, dfrps
 Requires at least: 3.8
 Tested up to: 3.8.1
 Stable tag: 0.9.4
