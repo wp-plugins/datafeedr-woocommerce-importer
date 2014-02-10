@@ -4,7 +4,7 @@ Contributors: datafeedrcom
 Tags: woocommerce, datafeedr, affiliate products, importer, dfrapi, dfrps, dfrpsimporter
 Requires at least: 3.8
 Tested up to: 3.8.1
-Stable tag: 0.9.3
+Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Import products from your Datafeedr Product Sets into your WooCommerce store.
 
 == Description ==
 
-**NOTE:** The *Datafeedr WooCommerce Importer* plugin requires the [Datafeedr API plugin](http://wordpress.org/plugins/datafeedr-api/) and the Datafeedr Product Sets plugin. It also requires [WooCommerce v2.1.0-beta-1](https://github.com/woothemes/woocommerce/releases) or greater.
+**NOTE:** The *Datafeedr WooCommerce Importer* plugin requires the [Datafeedr API plugin](http://wordpress.org/plugins/datafeedr-api/) and the [Datafeedr Product Sets plugin](http://wordpress.org/plugins/datafeedr-product-sets/). It also requires [WooCommerce](http://wordpress.org/plugins/woocommerce/) (v2.1+).
 
 The *Datafeedr WooCommerce Importer* plugin allows you to import products from your Datafeedr Product Sets into your WooCommerce store.
 
@@ -40,6 +40,11 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 0.9.4 =
+* Fixed undefined indexes.
+* Added YouTube video to readme.txt file.
+* Added some TODOs regarding attribute filters.
 
 = 0.9.3 =
 * Initial release.

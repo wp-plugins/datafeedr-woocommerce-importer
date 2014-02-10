@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Datafeedr WooCommerce Importer
-Version: 0.9.3
+Version: 0.9.4
 Plugin URI: https://v4.datafeedr.com
-Description: Import products from the Datafeedr Product Sets plugin into your WooCommerce store. <strong>REQUIRES: </strong><a href="http://wordpress.org/plugins/datafeedr-api/">Datafeedr API plugin</a>, <a href="http://wordpress.org/plugins/datafeedr-product-sets/">Datafeedr Product Sets plugin</a>, <a href="https://github.com/woothemes/woocommerce/releases">WooCommerce v2.1.0-beta-1 (or greater)</a>.
+Description: Import products from the Datafeedr Product Sets plugin into your WooCommerce store. <strong>REQUIRES: </strong><a href="http://wordpress.org/plugins/datafeedr-api/">Datafeedr API plugin</a>, <a href="http://wordpress.org/plugins/datafeedr-product-sets/">Datafeedr Product Sets plugin</a>, <a href="http://wordpress.org/plugins/woocommerce/">WooCommerce</a> (v2.1+).
 Author: Datafeedr
 Author URI: https://v4.datafeedr.com
 License: GPL v3
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'0.9.3' );
+define( 'DFRPSWC_VERSION', 		'0.9.4' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -59,8 +59,8 @@ function dfrpswc_missing_required_plugins() {
 	}
 	
 	if ( !class_exists( 'Woocommerce' ) ) {
-		echo '<div class="update-nag" style="border-color: red;"><p>' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>WooCommerce v2.1.0-beta-1 or greater</strong> plugin be installed and activated.', DFRPSWC_DOMAIN );
-		echo ' <a href="https://github.com/woothemes/woocommerce/releases">';
+		echo '<div class="update-nag" style="border-color: red;"><p>' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>WooCommerce</strong> (v2.1+) plugin be installed and activated.', DFRPSWC_DOMAIN );
+		echo ' <a href="http://wordpress.org/plugins/woocommerce/">';
 		echo  __( 'Download the WooCommerce Plugin', DFRPSWC_DOMAIN );
 		echo '</a></p></div>';
 	}
