@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Datafeedr WooCommerce Importer
-Version: 0.9.4
+Version: 0.9.5
 Plugin URI: https://v4.datafeedr.com
 Description: Import products from the Datafeedr Product Sets plugin into your WooCommerce store. <strong>REQUIRES: </strong><a href="http://wordpress.org/plugins/datafeedr-api/">Datafeedr API plugin</a>, <a href="http://wordpress.org/plugins/datafeedr-product-sets/">Datafeedr Product Sets plugin</a>, <a href="http://wordpress.org/plugins/woocommerce/">WooCommerce</a> (v2.1+).
 Author: Datafeedr
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'0.9.4' );
+define( 'DFRPSWC_VERSION', 		'0.9.5' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -475,33 +475,288 @@ function dfrpswc_update_terms( $post, $product, $set, $action ) {
 
 /**
  * Update the attributes (unique to WC) for this product.
+ * Most code from:
+ * ~/wp-content/plugins/woocommerce/includes/admin/post-types/meta-boxes/class-wc-meta-box-product-data.php (Line #397)
  */
 function dfrpswc_update_attributes( $post, $product, $set, $action ) {
+	
+	$attrs = array();
+	
+	// Array of defined attribute taxonomies
+	$attribute_taxonomies = wc_get_attribute_taxonomies();
+	
+	// Product attributes - taxonomies and custom, ordered, with visibility and variation attributes set
+	$attributes = maybe_unserialize( get_post_meta( $post['ID'], '_product_attributes', true ) );
+	$attributes = apply_filters( 'dfrpswc_product_attributes', $attributes, $post, $product, $set, $action );
+	
+	$i = -1;
 
-	// @TODO - rewrite: ~/Development/Datafeedr/wpsvn/wp-content/plugins/woocommerce-2.1.0-RC1/includes/admin/post-types/meta-boxes/class-wc-meta-box-product-data.php (Line #397)
+	// Taxonomies (attributes)
+	if ( $attribute_taxonomies ) {
+				
+		foreach ( $attribute_taxonomies as $tax ) {
 
-	$attributes = array();
+			// Get name of taxonomy we're now outputting (pa_xxx)
+			$attribute_taxonomy_name = wc_attribute_taxonomy_name( $tax->attribute_name );
+
+			// Ensure it exists
+			if ( ! taxonomy_exists( $attribute_taxonomy_name ) ) {
+				continue;
+			}
+			
+			$i++;
+
+			// Get product data values for current taxonomy - this contains ordering and visibility data
+			if ( isset( $attributes[ sanitize_title( $attribute_taxonomy_name ) ] ) ) {
+				$attribute = $attributes[ sanitize_title( $attribute_taxonomy_name ) ];
+			}
+
+			$position = empty( $attribute['position'] ) ? 0 : absint( $attribute['position'] );
+			$visibility = 1;
+			$variation = 0;
+
+			// Get terms of this taxonomy associated with current product
+			$post_terms = wp_get_post_terms( $post['ID'], $attribute_taxonomy_name );			
+			
+			if ( $post_terms ) {
+				$value = array();
+				foreach ( $post_terms as $term ) {
+					$value[] = $term->slug;
+				}
+			} else {
+				$value = '';
+			}
+			
+			$attrs['attribute_names'][$i] 		= $attribute_taxonomy_name;
+			$attrs['attribute_is_taxonomy'][$i] = 1;
+			$attrs['attribute_values'][$i] 		= apply_filters( 'dfrpswc_filter_attribute_value', $value, $attribute_taxonomy_name, $post, $product, $set, $action );
+			$attrs['attribute_position'][$i] 	= apply_filters( 'dfrpswc_filter_attribute_position', $position, $attribute_taxonomy_name, $post, $product, $set, $action );
+			$attrs['attribute_visibility'][$i] 	= apply_filters( 'dfrpswc_filter_attribute_visibility', $visibility, $attribute_taxonomy_name, $post, $product, $set, $action );
+			$attrs['attribute_variation'][$i] 	= apply_filters( 'dfrpswc_filter_attribute_variation', $variation, $attribute_taxonomy_name, $post, $product, $set, $action );
+	
+		} // foreach ( $attribute_taxonomies as $tax ) {
 		
-	$attributes = dfrpswc_add_attribute( $product, $attributes, 'source', 'pa_network', 1, 1, 0 );
-	$attributes = dfrpswc_add_attribute( $product, $attributes, 'merchant', 'pa_merchant', 1 );
-	$attributes = dfrpswc_add_attribute( $product, $attributes, 'brand', 'pa_brand', 1 );
+	} // if ( $attribute_taxonomies ) {
 	
-	$attributes = apply_filters( 'dfrpswc_filter_attributes_array', $attributes, $post, $product, $set, $action );
+	// Custom Attributes
+	if ( ! empty( $attributes ) ) {
+		
+		foreach ( $attributes as $attribute ) {
+		
+			if ( $attribute['is_taxonomy'] ) {
+				continue;
+			}
+
+			$i++;
+						
+			$attribute_name = $attribute['name'];
+			
+			$position = empty( $attribute['position'] ) ? 0 : absint( $attribute['position'] );
+			$visibility = 1;
+			$variation = 0;
+
+			// Get value.
+			$value = $attribute['value'];
+						
+			$attrs['attribute_names'][$i] 		= $attribute_name;
+			$attrs['attribute_is_taxonomy'][$i] = 0;
+			$attrs['attribute_values'][$i] 		= apply_filters( 'dfrpswc_filter_attribute_value', $value, $attribute_name, $post, $product, $set, $action );
+			$attrs['attribute_position'][$i] 	= apply_filters( 'dfrpswc_filter_attribute_position', $position, $attribute_name, $post, $product, $set, $action );
+			$attrs['attribute_visibility'][$i] 	= apply_filters( 'dfrpswc_filter_attribute_visibility', $visibility, $attribute_name, $post, $product, $set, $action );
+			$attrs['attribute_variation'][$i] 	= apply_filters( 'dfrpswc_filter_attribute_variation', $variation, $attribute_name, $post, $product, $set, $action );
+		
+		} // foreach ( $attributes as $attribute ) {
+ 		
+	} // if ( ! empty( $attributes ) ) {
 	
-	/**
-	 * Loop through attributes and use wp_set_object_terms()
-	 * on any attribute with is_taxonomy=1
-	 * to set the term and remove the value from the 'value' field.
-	 */
-	foreach( $attributes as $k => $v ) {
-		if ( $v['is_taxonomy'] == 1 ) {
-			wp_set_object_terms( $post['ID'], $v['value'], $v['name'] );	
-			$v['value'] = '';
+	$attrs = apply_filters( 'dfrpswc_pre_save_attributes', $attrs, $post, $product, $set, $action );
+	
+	// Save Attributes
+	dfrpswc_save_attributes( $post['ID'], $attrs );
+}
+
+/**
+ * Add network attribute.
+ */
+add_filter( 'dfrpswc_filter_attribute_value', 'dfrpswc_add_network_attribute', 10, 6 );
+function dfrpswc_add_network_attribute( $value, $attribute, $post, $product, $set, $action ) {
+	if ( $attribute == 'pa_network') {
+		$value = $product['source'];
+	}
+	return $value;
+}
+
+/**
+ * Set "position" of network attribute.
+ */
+add_filter( 'dfrpswc_filter_attribute_position', 'dfrpswc_set_network_attribute_position', 10, 6 );
+function dfrpswc_set_network_attribute_position( $position, $attribute, $post, $product, $set, $action ) {
+	if ( $attribute == 'pa_network') {
+		$position = 1;
+	}
+	return $position;
+}
+
+/**
+ * Set "visibility" of network attribute to hidden (0).
+ */
+add_filter( 'dfrpswc_filter_attribute_visibility', 'dfrpswc_hide_network_attribute', 10, 6 );
+function dfrpswc_hide_network_attribute( $visibility, $attribute, $post, $product, $set, $action ) {
+	if ( $attribute == 'pa_network') {
+		$visibility = 0;
+	}
+	return $visibility;
+}
+
+/**
+ * Add merchant attribute.
+ */
+add_filter( 'dfrpswc_filter_attribute_value', 'dfrpswc_add_merchant_attribute', 10, 6 );
+function dfrpswc_add_merchant_attribute( $value, $attribute, $post, $product, $set, $action ) {
+	if ( $attribute == 'pa_merchant') {
+		$value = $product['merchant'];
+	}
+	return $value;
+}
+
+/**
+ * Set "position" of merchant attribute.
+ */
+add_filter( 'dfrpswc_filter_attribute_position', 'dfrpswc_set_merchant_attribute_position', 10, 6 );
+function dfrpswc_set_merchant_attribute_position( $position, $attribute, $post, $product, $set, $action ) {
+	if ( $attribute == 'pa_merchant') {
+		$position = 2;
+	}
+	return $position;
+}
+
+/**
+ * Add brand attribute.
+ */
+add_filter( 'dfrpswc_filter_attribute_value', 'mycode_add_brand_attribute', 10, 6 );
+function mycode_add_brand_attribute( $value, $attribute, $post, $product, $set, $action ) {
+	if ( $attribute == 'pa_brand') {
+		$value = $product['brand'];
+	}
+	return $value;
+}
+
+/**
+ * Set "position" of brand attribute.
+ */
+add_filter( 'dfrpswc_filter_attribute_position', 'dfrpswc_set_brand_attribute_position', 10, 6 );
+function dfrpswc_set_brand_attribute_position( $position, $attribute, $post, $product, $set, $action ) {
+	if ( $attribute == 'pa_brand') {
+		$position = 3;
+	}
+	return $position;
+}
+
+
+/**
+ * This saves WC attribute data. 
+ *
+ * Most code comes from Line #1000 here: 
+ * ~/wp-content/plugins/woocommerce/includes/admin/post-types/meta-boxes/class-wc-meta-box-product-data.php
+ */
+function dfrpswc_save_attributes( $post_id, $dfrpswc_attributes ) {
+
+	// Save Attributes
+	$attributes = array();
+	
+	if ( isset( $dfrpswc_attributes['attribute_names'] ) && isset( $dfrpswc_attributes['attribute_values'] ) ) {
+		
+		$attribute_names  = $dfrpswc_attributes['attribute_names'];
+		$attribute_values = $dfrpswc_attributes['attribute_values'];
+
+		if ( isset( $dfrpswc_attributes['attribute_visibility'] ) )
+			$attribute_visibility = $dfrpswc_attributes['attribute_visibility'];
+
+		if ( isset( $dfrpswc_attributes['attribute_variation'] ) )
+			$attribute_variation = $dfrpswc_attributes['attribute_variation'];
+
+		$attribute_is_taxonomy = $dfrpswc_attributes['attribute_is_taxonomy'];
+		$attribute_position = $dfrpswc_attributes['attribute_position'];
+
+		$attribute_names_count = sizeof( $attribute_names );
+
+		for ( $i=0; $i < $attribute_names_count; $i++ ) {
+			
+			if ( ! $attribute_names[ $i ] ) {
+				continue;
+			}
+
+			$is_visible 	= ( isset( $attribute_visibility[ $i ] ) && $attribute_visibility[ $i ] != 0 ) ? 1 : 0;
+			$is_variation 	= ( isset( $attribute_variation[ $i ] ) && $attribute_variation[ $i ] != 0 ) ? 1 : 0;
+			$is_taxonomy 	= $attribute_is_taxonomy[ $i ] ? 1 : 0;
+			
+			if ( $is_taxonomy ) {
+
+				if ( isset( $attribute_values[ $i ] ) ) {
+
+					// Select based attributes - Format values (posted values are slugs)
+					if ( is_array( $attribute_values[ $i ] ) ) {
+						$values = array_map( 'sanitize_title', $attribute_values[ $i ] );
+
+					// Text based attributes - Posted values are term names - don't change to slugs
+					} else {
+						$values = array_map( 'stripslashes', array_map( 'strip_tags', explode( WC_DELIMITER, $attribute_values[ $i ] ) ) );
+					}
+
+					// Remove empty items in the array
+					$values = array_filter( $values, 'strlen' );
+
+				} else {
+				
+					$values = array();
+				}
+
+				// Update post terms
+				if ( taxonomy_exists( $attribute_names[ $i ] ) ) {
+					wp_set_object_terms( $post_id, $values, $attribute_names[ $i ] );
+				}
+
+				if ( $values ) {
+					// Add attribute to array, but don't set values
+					$attributes[ sanitize_title( $attribute_names[ $i ] ) ] = array(
+						'name' 			=> wc_clean( $attribute_names[ $i ] ),
+						'value' 		=> '',
+						'position' 		=> $attribute_position[ $i ],
+						'is_visible' 	=> $is_visible,
+						'is_variation' 	=> $is_variation,
+						'is_taxonomy' 	=> $is_taxonomy
+					);
+				}
+
+			} elseif ( isset( $attribute_values[ $i ] ) ) {
+
+				// Text based, separate by pipe
+				$values = implode( ' ' . WC_DELIMITER . ' ', array_map( 'wc_clean', explode( WC_DELIMITER, $attribute_values[ $i ] ) ) );
+
+				// Custom attribute - Add attribute to array and set the values
+				$attributes[ sanitize_title( $attribute_names[ $i ] ) ] = array(
+					'name' 			=> wc_clean( $attribute_names[ $i ] ),
+					'value' 		=> $values,
+					'position' 		=> $attribute_position[ $i ],
+					'is_visible' 	=> $is_visible,
+					'is_variation' 	=> $is_variation,
+					'is_taxonomy' 	=> $is_taxonomy
+				);
+			}
+
+		 }
+	}
+
+	if ( ! function_exists( 'attributes_cmp' ) ) {
+		function attributes_cmp( $a, $b ) {
+			if ( $a['position'] == $b['position'] ) return 0;
+			return ( $a['position'] < $b['position'] ) ? -1 : 1;
 		}
-		unset( $attributes[$k]['field'] ); // Unset field because WC is not expecting that array item.
 	}
 	
-	update_post_meta( $post['ID'], '_product_attributes', $attributes );
+	uasort( $attributes, 'attributes_cmp' );
+
+	update_post_meta( $post_id, '_product_attributes', $attributes );
 }
 
 /**
