@@ -1,14 +1,14 @@
 === Datafeedr WooCommerce Importer ===
 
 Contributors: datafeedrcom
-Tags: woocommerce,datafeedr,dfrpsimporter,affiliate products,importer,dfrapi,dfrps
+Tags: woocommerce,datafeedr,dfrpsimporter,affiliate products,importer,dfrapi,dfrps,sellfire,popshops
 Requires at least: 3.8
 Tested up to: 3.8.1
-Stable tag: 0.9.5
+Stable tag: 0.9.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Import products from your Datafeedr Product Sets into your WooCommerce store.
+Import products from the Datafeedr API into your WooCommerce store.
 
 == Description ==
 
@@ -16,7 +16,11 @@ Import products from your Datafeedr Product Sets into your WooCommerce store.
 
 The *Datafeedr WooCommerce Importer* plugin allows you to import products from your Datafeedr Product Sets into your WooCommerce store.
 
-Here's a longish video demonstrating the *Datafeedr WooCommerce Importer* plugin.
+A short video demonstrating the *Datafeedr WooCommerce Importer* plugin.
+
+[youtube http://www.youtube.com/watch?v=PdlxcMY_sIQ]
+
+A long video demonstrating the *Datafeedr WooCommerce Importer* plugin.
 
 [youtube http://www.youtube.com/watch?v=A4j7bwL9v-E]
 
@@ -40,6 +44,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 0.9.6 =
+* Updated plugin information.
 
 = 0.9.5 =
 * Fixed hooks for attributes.
