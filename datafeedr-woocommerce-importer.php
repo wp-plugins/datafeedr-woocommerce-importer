@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Datafeedr WooCommerce Importer
-Version: 0.9.6
+Version: 0.9.7
 Plugin URI: https://v4.datafeedr.com
 Description: Import products from the Datafeedr Product Sets plugin into your WooCommerce store. <strong>REQUIRES: </strong><a href="http://wordpress.org/plugins/datafeedr-api/">Datafeedr API plugin</a>, <a href="http://wordpress.org/plugins/datafeedr-product-sets/">Datafeedr Product Sets plugin</a>, <a href="http://wordpress.org/plugins/woocommerce/">WooCommerce</a> (v2.1+).
 Author: Datafeedr
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'0.9.6' );
+define( 'DFRPSWC_VERSION', 		'0.9.7' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -71,7 +71,7 @@ function dfrpswc_missing_required_plugins() {
  */
 add_action( 'admin_notices', 'dfrpswc_settings_updated' );	
 function dfrpswc_settings_updated() {
-	if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true && 'dfrpswc_options' == $_GET['page'] ) {
+	if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true && isset( $_GET['page'] ) && 'dfrpswc_options' == $_GET['page'] ) {
 		echo '<div class="updated"><p>';
 		_e( 'Configuration successfully updated!', DFRPSWC_DOMAIN );
 		echo '</p></div>';
@@ -636,7 +636,9 @@ function dfrpswc_set_merchant_attribute_position( $position, $attribute, $post, 
 add_filter( 'dfrpswc_filter_attribute_value', 'mycode_add_brand_attribute', 10, 6 );
 function mycode_add_brand_attribute( $value, $attribute, $post, $product, $set, $action ) {
 	if ( $attribute == 'pa_brand') {
-		$value = $product['brand'];
+		if ( isset( $product['brand'] ) ) {
+			$value = $product['brand'];
+		}
 	}
 	return $value;
 }
