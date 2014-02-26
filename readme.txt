@@ -1,6 +1,6 @@
 === Datafeedr WooCommerce Importer ===
 
-Contributors: datafeedrcom
+Contributors: datafeedr.com
 Tags: woocommerce,datafeedr,dfrpsimporter,affiliate products,importer,dfrapi,dfrps,sellfire,popshops
 Requires at least: 3.8
 Tested up to: 3.8.1
@@ -44,6 +44,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 0.9.8 =
+* Updated "Contributors" and "Author" fields to match WP.org username.
 
 = 0.9.7 =
 * Fixed undefined indexes.
