@@ -191,6 +191,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 
 == Changelog ==
 
+= 1.0.1 =
+* Update "Installation" section of the readme.txt file.
+
 = 1.0.0 =
 * Updated "Contributors" and "Author" fields to match WP.org username.
 * Updated readme.txt file with full plugin description.
