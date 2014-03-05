@@ -156,8 +156,27 @@ Our [documentation](https://v4.datafeedr.com/support?p=1&utm_campaign=dfrpswcplu
 
 == Installation ==
 
-You can find the full Datafeedr WooCommerce Importer set-up guide here:
-[https://v4.datafeedr.com/node/327](https://v4.datafeedr.com/node/327?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg)
+The [Datafeedr WooCommerce Importer Set-up Guide](https://v4.datafeedr.com/documentation/327?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) can be found on our site.
+
+= Requirements =
+In order to use the Datafeedr WooCommerce Importer plugin you'll need a few things:
+
+* [WooCommerce](http://wordpress.org/plugins/woocommerce/) (free)
+* [Datafeedr API](http://wordpress.org/plugins/datafeedr-api/) (free)
+* [Datafeedr Product Sets](http://wordpress.org/plugins/datafeedr-product-sets/) (free)
+* [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (free, paid)
+* An account with 1 or more of the supported affiliate networks.
+* PHP's `allow_url_fopen` must be `On`.
+* WordPress Cron enabled.
+* 64MB of memory ([instructions](http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP)).
+
+= Video Tutorial =
+[Watch a video](http://www.youtube.com/watch?v=A4j7bwL9v-E) of of how to set-up the Datafeedr WooCommerce Importer plugin.
+
+[youtube http://www.youtube.com/watch?v=A4j7bwL9v-E]
+
+= Questions = 
+Have questions about our plugin?  Feel free to post on our [help desk](https://v4.datafeedr.com/support?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg).
 
 == Frequently Asked Questions ==
 
