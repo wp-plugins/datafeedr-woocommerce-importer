@@ -338,6 +338,7 @@ function dfrpswc_do_products( $data, $set ) {
 			dfrpswc_update_terms( $post, $product, $set, $action );
 			dfrpswc_update_postmeta( $post, $product, $set, $action );
 			dfrpswc_update_attributes( $post, $product, $set, $action );
+			do_action( 'dfrpswc_do_product', $post, $product, $set, $action );
 		}		
 	}
 }
