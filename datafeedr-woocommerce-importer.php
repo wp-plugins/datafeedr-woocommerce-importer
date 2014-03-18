@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Datafeedr WooCommerce Importer
-Version: 1.0.2
+Version: 1.0.3
 Plugin URI: https://v4.datafeedr.com
 Description: Import products from the Datafeedr Product Sets plugin into your WooCommerce store. <strong>REQUIRES: </strong><a href="http://wordpress.org/plugins/datafeedr-api/">Datafeedr API plugin</a>, <a href="http://wordpress.org/plugins/datafeedr-product-sets/">Datafeedr Product Sets plugin</a>, <a href="http://wordpress.org/plugins/woocommerce/">WooCommerce</a> (v2.1+).
 Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 3.8.1
+Tested up to: 3.9-beta1
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.0.2' );
+define( 'DFRPSWC_VERSION', 		'1.0.3' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -425,7 +425,7 @@ function dfrpswc_update_postmeta( $post, $product, $set, $action ) {
 	}
 	
 	// Handle sale price.
-	if ( $product['onsale'] == 1 ) {
+	if ( isset( $product['onsale'] ) && $product['onsale'] == 1 ) {
 		$meta['_sale_price'] = dfrps_int_to_price( $product['saleprice'] );
 		$meta['_price'] = dfrps_int_to_price( $product['saleprice'] );
 	}
