@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Datafeedr WooCommerce Importer
-Version: 1.0.3
+Version: 1.0.4
 Plugin URI: https://v4.datafeedr.com
 Description: Import products from the Datafeedr Product Sets plugin into your WooCommerce store. <strong>REQUIRES: </strong><a href="http://wordpress.org/plugins/datafeedr-api/">Datafeedr API plugin</a>, <a href="http://wordpress.org/plugins/datafeedr-product-sets/">Datafeedr Product Sets plugin</a>, <a href="http://wordpress.org/plugins/woocommerce/">WooCommerce</a> (v2.1+).
 Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 3.9-beta1
+Tested up to: 3.9-beta2
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.0.3' );
+define( 'DFRPSWC_VERSION', 		'1.0.4' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -125,7 +125,7 @@ function dfrpswc_admin_menu() {
 
 	add_submenu_page(
 		'dfrps',
-		__( 'WooCommerce Product Import Options', DFRPSWC_DOMAIN ), 
+		__( 'Options &#8212; Datafeedr WooCommerce Importer', DFRPSWC_DOMAIN ), 
 		__( 'WC Importer', DFRPSWC_DOMAIN ), 
 		'manage_options', 
 		'dfrpswc_options',
@@ -151,7 +151,7 @@ function dfrpswc_get_options() {
  */
 function dfrpswc_options_output() {
 	echo '<div class="wrap" id="dfrpswc_options">';
-	echo '<h2>' . __( 'WooCommerce Product Import Options', DFRPSWC_DOMAIN ) . '</h2>';
+	echo '<h2>' . __( 'Options &#8212; Datafeedr WooCommerce Importer', DFRPSWC_DOMAIN ) . '</h2>';
 	echo '<form method="post" action="options.php">';
 	wp_nonce_field( 'dfrpswc-update-options' );
 	settings_fields( 'dfrpswc_options-page' );
@@ -175,7 +175,7 @@ function dfrpswc_register_settings() {
  * General settings section description.
  */
 function dfrpswc_general_settings_section() { 
-	echo __( 'General settings for importing products into your WooCommerce store.', DFRPSWC_DOMAIN );
+	//echo __( 'General settings for importing products into your WooCommerce store.', DFRPSWC_DOMAIN );
 }
 
 /**

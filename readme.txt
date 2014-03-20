@@ -3,7 +3,7 @@
 Contributors: datafeedr.com
 Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, bol.com, cj, clickbank, commission factory, commission junction, commission monster, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, m4n, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, regnow, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 Requires at least: 3.8
-Tested up to: 3.9-beta1
+Tested up to: 3.9-beta2
 Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.0.4 =
+* Changes to a lot of help text on all pages.
 
 = 1.0.3 =
 * Fixed undefined indexes.
