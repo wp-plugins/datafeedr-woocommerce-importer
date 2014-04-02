@@ -3,7 +3,7 @@
 Contributors: datafeedr.com
 Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, bol.com, cj, clickbank, commission factory, commission junction, commission monster, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, m4n, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, regnow, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 Requires at least: 3.8
-Tested up to: 3.9-beta2
+Tested up to: 3.9-beta3
 Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -36,7 +36,7 @@ A short video demonstrating the Datafeedr WooCommerce Importer plugin.
 
 * **12,000+ Merchants** - Select from thousands of internationally recognizable brands and boutique retailers.
 
-* **33 Affiliate Networks** - Choose from the largest affiliate networks. (See full list below.)
+* **34 Affiliate Networks** - Choose from the largest affiliate networks. (See full list below.)
 
 * **19 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, Italy, Netherlands, New Zealand, Norway, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
 
@@ -109,6 +109,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Adtraction** (DK, FI, NO, SE)
 1. **Affiliate Window** (UK, US)
 1. **Affiliate4You** (NL)
+1. **Affiliator** (SE)
 1. **Affilinet** (DE, ES, FR, NL, UK)
 1. **Avangate** (US)
 1. **AvantLink** (CA, US)
@@ -190,6 +191,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.0.5 =
+* Added Affiliator to readme file.
 
 = 1.0.4 =
 * Changes to a lot of help text on all pages.
