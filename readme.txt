@@ -4,7 +4,7 @@ Contributors: datafeedr.com
 Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, bol.com, cj, clickbank, commission factory, commission junction, commission monster, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, m4n, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, regnow, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 Requires at least: 3.8
 Tested up to: 3.9-beta3
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -146,7 +146,7 @@ In order to use the Datafeedr WooCommerce Importer plugin you'll need a few thin
 * [WooCommerce](http://wordpress.org/plugins/woocommerce/) (free)
 * [Datafeedr API](http://wordpress.org/plugins/datafeedr-api/) (free)
 * [Datafeedr Product Sets](http://wordpress.org/plugins/datafeedr-product-sets/) (free)
-* [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (free, paid)
+* [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (paid)
 * An account with 1 or more of the supported affiliate networks.
 * PHP's `allow_url_fopen` must be `On`.
 * WordPress Cron enabled.
@@ -165,7 +165,7 @@ In order to use the Datafeedr WooCommerce Importer plugin you'll need a few thin
 * [WooCommerce](http://wordpress.org/plugins/woocommerce/) (free)
 * [Datafeedr API](http://wordpress.org/plugins/datafeedr-api/) (free)
 * [Datafeedr Product Sets](http://wordpress.org/plugins/datafeedr-product-sets/) (free)
-* [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (free, paid)
+* [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (paid)
 * An account with 1 or more of the supported affiliate networks.
 * PHP's `allow_url_fopen` must be `On`.
 * WordPress Cron enabled.
