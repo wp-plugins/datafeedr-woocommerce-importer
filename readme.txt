@@ -3,8 +3,8 @@
 Contributors: datafeedr.com
 Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, bol.com, cj, clickbank, commission factory, commission junction, commission monster, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, m4n, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, regnow, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 Requires at least: 3.8
-Tested up to: 3.9-beta3
-Stable tag: 1.0.5
+Tested up to: 3.9
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -123,6 +123,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Commission Monster** (AU)
 1. **Daisycon** (BE, DE, FR, NL)
 1. **DGM** (AU)
+1. **Double.net** (SE)
 1. **Impact Radius** (US)
 1. **LinkConnector** (US)
 1. **LinkShare** (AU, UK, US)
@@ -191,6 +192,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.0.6 =
+* Added Double.net to readme.txt file.
 
 = 1.0.5 =
 * Added Affiliator to readme file.
