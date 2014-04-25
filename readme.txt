@@ -193,6 +193,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 
 == Changelog ==
 
+= 1.0.8 =
+* Added upgrade.php file to track version changes.
+
 = 1.0.7 =
 * Updated readme.txt file.
 
