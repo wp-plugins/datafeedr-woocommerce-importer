@@ -43,7 +43,7 @@ define( 'DFRPSWC_TAXONOMY', 	'product_cat' );
 /**
  * Load upgrade file.
  */
-require_once( DFRPS_PATH . 'upgrade.php' );
+require_once( DFRPSWC_PATH . 'upgrade.php' );
 
 /*******************************************************************
 ADMIN NOTICES
