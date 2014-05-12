@@ -8,7 +8,7 @@ Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
 Tested up to: 4.0-alpha
-Version: 1.0.8
+Version: 1.0.9
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.0.8' );
+define( 'DFRPSWC_VERSION', 		'1.0.9' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -430,7 +430,7 @@ function dfrpswc_update_postmeta( $post, $product, $set, $action ) {
 	}
 	
 	// Handle sale price.
-	if ( isset( $product['onsale'] ) && $product['onsale'] == 1 ) {
+	if ( isset( $product['saleprice'] ) ) {
 		$meta['_sale_price'] = dfrps_int_to_price( $product['saleprice'] );
 		$meta['_price'] = dfrps_int_to_price( $product['saleprice'] );
 	}
