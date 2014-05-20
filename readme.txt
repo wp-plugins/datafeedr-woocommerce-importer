@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
 Tested up to: 4.0-alpha
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -192,6 +192,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.0.10 =
+* Changed add_option to update_option in upgrade.php file.
 
 = 1.0.9 =
 * Fixed issue with using 'onsale' key versus 'saleprice'. (#9210)

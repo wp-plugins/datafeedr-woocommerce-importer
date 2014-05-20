@@ -21,4 +21,4 @@ $previous_version = get_option( 'dfrpswc_version', FALSE );
  * 
  * Now that any upgrade functions are performed, update version in database.
  */
-add_option( 'dfrpswc_version', DFRPSWC_VERSION );
+update_option( 'dfrpswc_version', DFRPSWC_VERSION );
