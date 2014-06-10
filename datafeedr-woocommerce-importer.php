@@ -8,7 +8,7 @@ Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
 Tested up to: 4.0-alpha
-Version: 1.0.10
+Version: 1.0.11
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.0.10' );
+define( 'DFRPSWC_VERSION', 		'1.0.11' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -843,6 +843,24 @@ function dfrpswc_delete_stranded_products( $obj ) {
 		return;
 	}
 }
+
+/**
+ * When update is complete, Recount Terms.
+ * 
+ * This code is taken from public function status_tools()
+ * in ~/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-status.php
+ */
+add_action( 'dfrps_set_update_complete', 'dfrpswc_update_complete' );
+function dfrpswc_update_complete( $set ) {		
+	
+	$product_cats = get_terms( DFRPSWC_TAXONOMY, array( 'hide_empty' => false, 'fields' => 'id=>parent' ) );
+	_wc_term_recount( $product_cats, get_taxonomy( DFRPSWC_TAXONOMY ), true, false );
+
+	$product_tags = get_terms( DFRPSWC_TAXONOMY, array( 'hide_empty' => false, 'fields' => 'id=>parent' ) );
+	_wc_term_recount( $product_tags, get_taxonomy( DFRPSWC_TAXONOMY ), true, false );
+
+	delete_transient( 'wc_term_counts' );
+} 
 
 
 /*******************************************************************
