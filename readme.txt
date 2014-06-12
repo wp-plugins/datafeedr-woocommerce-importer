@@ -1,12 +1,12 @@
 === Datafeedr WooCommerce Importer ===
 
 Contributors: datafeedr.com
-Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, cj, clickbank, commission factory, commission junction, commission monster, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, m4n, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, regnow, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
+Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, m4n, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, regnow, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
 Tested up to: 4.0-alpha
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -36,7 +36,7 @@ A short video demonstrating the Datafeedr WooCommerce Importer plugin.
 
 * **12,000+ Merchants** - Select from thousands of internationally recognizable brands and boutique retailers.
 
-* **33 Affiliate Networks** - Choose from the largest affiliate networks. (See full list below.)
+* **30+ Affiliate Networks** - Choose from the largest affiliate networks. (See full list below.)
 
 * **19 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, Italy, Netherlands, New Zealand, Norway, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
 
@@ -119,7 +119,6 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **clixGalore** (AU, NZ, UK, US)
 1. **Commission Factory** (AU)
 1. **Commission Junction** (DE, SE, UK, US)
-1. **Commission Monster** (AU)
 1. **Daisycon** (BE, DE, FR, NL)
 1. **DGM** (AU)
 1. **Double.net** (SE)
@@ -192,8 +191,11 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 
 == Changelog ==
 
+= 1.0.13 =
+* Removed Commission Monster from list of supported affiliate networks.
+
 = 1.0.12 =
-* Remove BOL from list of supported affiliate networks.
+* Removed BOL from list of supported affiliate networks.
 
 = 1.0.11 =
 * Perform term recount (WC style) when product set update is complete.
