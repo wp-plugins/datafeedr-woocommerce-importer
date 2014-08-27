@@ -1,11 +1,11 @@
 === Datafeedr WooCommerce Importer ===
 
 Contributors: datafeedr.com
-Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, m4n, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, regnow, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
+Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, mycommerce, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.0-alpha
+Tested up to: 4.0-RC1
 Stable tag: 1.0.13
 
 Import products from the Datafeedr API into your WooCommerce store.
@@ -125,12 +125,11 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Impact Radius** (US)
 1. **LinkConnector** (US)
 1. **LinkShare** (AU, UK, US)
-1. **M4N** (NL)
+1. **MyCommerce** (US)
 1. **oneNetworkDirect** (DE, UK, US)
 1. **Paid On Results** (UK)
 1. **Partner-ads** (DK)
 1. **PepperJam** (US)
-1. **RegNow** (US)
 1. **RevResponse** (US)
 1. **ShareASale** (US)
 1. **SuperClix** (DE)
@@ -190,6 +189,11 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.0.14 =
+* Removed M4N from the readme.txt file.
+* Changed RegNow to MyCommerce in readme file.
+* Added plugin icon for WordPress 4.0+.
 
 = 1.0.13 =
 * Removed Commission Monster from list of supported affiliate networks.
