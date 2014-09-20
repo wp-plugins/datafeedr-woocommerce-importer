@@ -1,7 +1,7 @@
 === Datafeedr WooCommerce Importer ===
 
 Contributors: datafeedr.com
-Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, impact radius, import, linkconnector, linkshare, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, mycommerce, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
+Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, amazon local, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, flipkart, impact radius, import, linkconnector, linkshare, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, mycommerce, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
@@ -38,7 +38,7 @@ A short video demonstrating the Datafeedr WooCommerce Importer plugin.
 
 * **30+ Affiliate Networks** - Choose from the largest affiliate networks. (See full list below.)
 
-* **19 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, Italy, Netherlands, New Zealand, Norway, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
+* **19 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, India, Italy, Netherlands, New Zealand, Norway, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
 
 * **Unlimited Websites** - Import products into as many websites as you want.
 
@@ -113,6 +113,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Affilinet** (DE, ES, FR, NL, UK)
 1. **Avangate** (US)
 1. **AvantLink** (CA, US)
+1. **Amazon Local** (US)
 1. **belboon** (DE, FR, NL, UK)
 1. **Betty Mills** (US)
 1. **ClickBank** (US)
@@ -122,6 +123,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Daisycon** (BE, DE, FR, NL)
 1. **DGM** (AU)
 1. **Double.net** (SE)
+1. **FlipKart** (IN)
 1. **Impact Radius** (US)
 1. **LinkConnector** (US)
 1. **LinkShare** (AU, UK, US)
