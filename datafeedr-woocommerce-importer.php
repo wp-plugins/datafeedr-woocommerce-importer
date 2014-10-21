@@ -8,7 +8,7 @@ Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
 Tested up to: 4.0
-Version: 1.0.14
+Version: 1.0.15
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.0.14' );
+define( 'DFRPSWC_VERSION', 		'1.0.15' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -639,8 +639,8 @@ function dfrpswc_set_merchant_attribute_position( $position, $attribute, $post, 
 /**
  * Add brand attribute.
  */
-add_filter( 'dfrpswc_filter_attribute_value', 'mycode_add_brand_attribute', 10, 6 );
-function mycode_add_brand_attribute( $value, $attribute, $post, $product, $set, $action ) {
+add_filter( 'dfrpswc_filter_attribute_value', 'dfrpswc_add_brand_attribute', 10, 6 );
+function dfrpswc_add_brand_attribute( $value, $attribute, $post, $product, $set, $action ) {
 	if ( $attribute == 'pa_brand') {
 		if ( isset( $product['brand'] ) ) {
 			$value = $product['brand'];
