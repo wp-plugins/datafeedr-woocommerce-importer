@@ -7,7 +7,7 @@ Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 4.1-beta1
+Tested up to: 4.1
 Version: 1.0.16
 
 Datafeedr WooCommerce Importer plugin
@@ -968,6 +968,20 @@ function dfrpswc_product_sets_relationships_metabox( $post, $box ) {
 /*******************************************************************
 MISCELLANEOUS FUNCTIONS
 *******************************************************************/
+
+/**
+ * This removes this Product Set from this importers taxonomy.
+ * 
+ * TODO - Not fully tested.  Not yet active.
+ * Added 1.0.16.
+ */
+// add_action( 'save_post', 'dfrpswc_unset_product_set_taxonomy', 9999 );
+function dfrpswc_unset_product_set_taxonomy( $post_id ) {
+	$type = get_post_type( $post_id );
+	if ( $type == DFRPS_CPT ) {
+		wp_delete_object_term_relationships( $post_id, DFRPSWC_TAXONOMY );
+	}
+}
 
 /**
  * Returns true if product was imported by this plugin (Datafeedr WooCommerce Importer)
