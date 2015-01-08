@@ -38,7 +38,7 @@ A short video demonstrating the Datafeedr WooCommerce Importer plugin.
 
 * **30+ Affiliate Networks** - Choose from the largest affiliate networks. (See full list below.)
 
-* **19 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, India, Italy, Netherlands, New Zealand, Norway, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
+* **21 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, India, Italy, Netherlands, New Zealand, Norway, Poland, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
 
 * **Unlimited Websites** - Import products into as many websites as you want.
 
@@ -107,13 +107,13 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 
 1. **Adrecord** (SE)
 1. **Adtraction** (DK, FI, NO, SE)
-1. **Affiliate Window** (UK, US)
 1. **Affiliate4You** (NL)
+1. **Affiliate Window** (UK, US)
 1. **Affiliator** (SE)
 1. **Affilinet** (DE, ES, FR, NL, UK)
+1. **Amazon Local** (US)
 1. **Avangate** (US)
 1. **AvantLink** (CA, US)
-1. **Amazon Local** (US)
 1. **belboon** (DE, FR, NL, UK)
 1. **Betty Mills** (US)
 1. **ClickBank** (US)
@@ -135,10 +135,10 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **RevResponse** (US)
 1. **ShareASale** (US)
 1. **SuperClix** (DE)
-1. **Tradedoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, SE, UK)
-1. **TradeTracker** (BE, DE, DK, ES, FI, FR, IT, NL, NO, SE, UK)
+1. **TradeDoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, SE, UK)
+1. **TradeTracker** (BE, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, UK)
 1. **Webgains** (DE, ES, FR, IR, NL, NO, SE, UK, US)
-1. **Zanox** (AU, BE, BR, CH, DE, DK, ES, FI, FR, IT, NL, NO, SE, TR)
+1. **Zanox** (AU, BE, BR, CH, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, TR)
 
 = Requirements =
 In order to use the Datafeedr WooCommerce Importer plugin you'll need a few things:
