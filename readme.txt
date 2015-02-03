@@ -135,7 +135,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **RevResponse** (US)
 1. **ShareASale** (US)
 1. **SuperClix** (DE)
-1. **TradeDoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, SE, UK)
+1. **TradeDoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, PL, SE, UK)
 1. **TradeTracker** (BE, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, UK)
 1. **Webgains** (DE, ES, FR, IR, NL, NO, SE, UK, US)
 1. **Zanox** (AU, BE, BR, CH, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, TR)
