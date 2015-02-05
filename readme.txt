@@ -135,7 +135,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **RevResponse** (US)
 1. **ShareASale** (US)
 1. **SuperClix** (DE)
-1. **TradeDoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, SE, UK)
+1. **TradeDoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, PL, SE, UK)
 1. **TradeTracker** (BE, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, UK)
 1. **Webgains** (DE, ES, FR, IR, NL, NO, SE, UK, US)
 1. **Zanox** (AU, BE, BR, CH, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, TR)
@@ -148,7 +148,6 @@ In order to use the Datafeedr WooCommerce Importer plugin you'll need a few thin
 * [Datafeedr Product Sets](http://wordpress.org/plugins/datafeedr-product-sets/) (free)
 * [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (paid)
 * An account with 1 or more of the supported affiliate networks.
-* PHP's `allow_url_fopen` must be `ON`.
 * PHP's `CURL` support must be enabled.
 * WordPress Cron enabled.
 * 64MB of memory ([instructions](http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP)).
@@ -168,7 +167,6 @@ In order to use the Datafeedr WooCommerce Importer plugin you'll need a few thin
 * [Datafeedr Product Sets](http://wordpress.org/plugins/datafeedr-product-sets/) (free)
 * [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (paid)
 * An account with 1 or more of the supported affiliate networks.
-* PHP's `allow_url_fopen` must be `ON`.
 * PHP's `CURL` support must be enabled.
 * WordPress Cron enabled.
 * 64MB of memory ([instructions](http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP)).
