@@ -109,7 +109,6 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Adtraction** (DK, FI, NO, SE)
 1. **Affiliate4You** (NL)
 1. **Affiliate Window** (UK, US)
-1. **Affiliator** (SE)
 1. **Affilinet** (DE, ES, FR, NL, UK)
 1. **Amazon Local** (US)
 1. **Avangate** (US)
