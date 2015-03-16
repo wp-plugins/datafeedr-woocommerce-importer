@@ -7,8 +7,8 @@ Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 4.1
-Version: 1.0.16
+Tested up to: 4.1.1
+Version: 1.2.0
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.0.16' );
+define( 'DFRPSWC_VERSION', 		'1.2.0' );
+define( 'DFRPSWC_DB_VERSION', 	'1.2.0' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
 define( 'DFRPSWC_BASENAME', 	plugin_basename( __FILE__ ) );
@@ -80,6 +81,38 @@ function dfrpswc_settings_updated() {
 		echo '<div class="updated"><p>';
 		_e( 'Configuration successfully updated!', DFRPSWC_DOMAIN );
 		echo '</p></div>';
+	}
+}
+
+/**
+ * Notify user that their version of DFRPSWC is not compatible with their version of DFRPS.
+ */
+add_action( 'admin_notices', 'dfrpswc_not_compatible_with_dfrps' );
+function dfrpswc_not_compatible_with_dfrps() {
+	if ( defined( 'DFRPS_VERSION' ) )  {
+		if ( version_compare( DFRPS_VERSION, '1.2.0', '<' ) ) {
+
+			// Disable updates!
+			$dfrps_configuration = get_option( 'dfrps_configuration' );
+			$dfrps_configuration['updates_enabled'] = 'disabled';
+			update_option( 'dfrps_configuration', $dfrps_configuration );
+
+			$file = 'datafeedr-product-sets/datafeedr-product-sets.php';
+			$url = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $file, 'upgrade-plugin_' . $file );
+
+			?>
+			
+			<div class="error">
+				<p>
+					<strong style="color:#E44532;"><?php _e( 'URGENT - ACTION REQUIRED!', DFRPSWC_DOMAIN ); ?></strong>
+					<br /><?php _e( 'Your version of the <strong><em>Datafeedr Product Sets</em></strong> plugin is not compatible with your version of the <strong><em>Datafeedr WooCommerce Importer</em></strong> plugin.', DFRPSWC_DOMAIN ); ?>
+					<br /><?php _e( 'Failure to upgrade will result in data loss. Please update your version of the <strong><em>Datafeedr Product Sets</em></strong> plugin now.', DFRPSWC_DOMAIN ); ?>
+					<br /><a class="button button-primary button-large" style="margin-top: 6px" href="<?php echo $url; ?>"><?php _e( 'Update Now', DFRPSWC_DOMAIN ); ?></a>
+				</p>
+			</div>
+		
+			<?php	
+		}
 	}
 }
 
@@ -247,7 +280,7 @@ UPDATE FUNCTIONS
  * This processes batches at a time as this is a server/time
  * intensive process.
  */
-add_action( 'dfrps_preprocess', 'dfrpswc_unset_post_categories' );
+add_action( 'dfrps_preprocess-' . DFRPSWC_POST_TYPE, 'dfrpswc_unset_post_categories' );
 function dfrpswc_unset_post_categories( $obj ) {
 
 	// Get posts to unset categories for.
@@ -269,31 +302,40 @@ function dfrpswc_unset_post_categories( $obj ) {
 		$posts = dfrps_get_all_post_ids_by_set_id( $obj->set['ID'] );
 		update_option( 'unset_post_categories_'.DFRPSWC_POST_TYPE.'_for_set_' . $obj->set['ID'], $posts );
 	}
-	
+
 	/**
 	 * If $posts contains post IDs, we will grab the first X number of 
-	 * IDs from the array (where X is "preprocess_maximum") and remove
-	 * the category IDs from these posts where the category IDs match
-	 * the IDs which were selected when creating the Product Set.
+	 * IDs from the array (where X is "preprocess_maximum") and get all
+	 * term_ids that the product is associated with from other Product Sets.
 	 * 
-	 * After the category ID is removed, we also remove the "_dfrps_product_set_id"
-	 * so that we can find this product later and delete it if it is no 
-	 * longer associated with a Product Set.
+	 * Then we will have an array of term_ids that this product belongs to 
+	 * except the term_ids that this Product Set is responsible for adding.
 	 * 
-	 * Lastly, we remove each processed post ID from the $posts array.
+	 * Why?
+	 * 
+	 * Let's say we have the following situation:
+	 * 
+	 * SET A adds PRODUCT 1 to CATEGORY X
+	 * SET B adds PRODUCT 1 to CATEGORY X
+	 * 
+	 * What happens when SET A removes PRODUCT 1 from CATEGORY X?
+	 * 
+	 * We need to make sure that PRODUCT 1 remains in CATEGORY X. By getting
+	 * term_ids from all other Sets that added this product, we will keep
+	 * PRODUCT 1 in CATEGORY X.
 	 */
 	if ( is_array( $posts ) && !empty( $posts ) ) {
 		$config = (array) get_option( 'dfrps_configuration' );
 		$ids = array_slice( $posts, 0, $config['preprocess_maximum'] );
 		foreach ( $ids as $id ) {
-			dfrps_remove_category_ids_from_post( $id, $obj->set, DFRPSWC_POST_TYPE, DFRPSWC_TAXONOMY );
+			dfrps_add_term_ids_to_post( $id, $obj->set, DFRPSWC_POST_TYPE, DFRPSWC_TAXONOMY );
 			delete_post_meta( $id, '_dfrps_product_set_id', $obj->set['ID'] );
 			if ( ( $key = array_search( $id, $posts ) ) !== false ) {
 				unset( $posts[$key] );
 			}
 		}
 	}
-	
+		
 	/**
 	 * Now we need to check if there are more post IDs to process.
 	 * 
@@ -306,7 +348,7 @@ function dfrpswc_unset_post_categories( $obj ) {
 	 * with our reduced $posts array and let the "preprocess" run again.
 	 */
 	if ( empty( $posts ) ) {
-		update_post_meta( $obj->set['ID'], '_dfrps_preprocess_complete_' . DFRPSWC_POST_TYPE, true );
+		update_post_meta( $obj->set['ID'], '_dfrps_preprocess_complete_' . DFRPSWC_POST_TYPE, TRUE );
 		delete_option( 'unset_post_categories_'.DFRPSWC_POST_TYPE.'_for_set_' . $obj->set['ID'] );
 	} else {
 		update_option( 'unset_post_categories_'.DFRPSWC_POST_TYPE.'_for_set_' . $obj->set['ID'], $posts );
@@ -454,28 +496,28 @@ function dfrpswc_update_postmeta( $post, $product, $set, $action ) {
 function dfrpswc_update_terms( $post, $product, $set, $action ) {
 	
 	// Get the IDs of the categories this product is associated with.
-	$ids = array();
-	$cat_ids = get_post_meta( $set['ID'], '_dfrps_cpt_categories', true );
-	if ( isset( $cat_ids[DFRPSWC_POST_TYPE] ) && !empty( $cat_ids[DFRPSWC_POST_TYPE] ) ) {
-		foreach ( $cat_ids[DFRPSWC_POST_TYPE] as $id ) {
-			$ids[] = $id;
-		}		
-	}
+	$terms = array();
+	$terms = dfrps_get_cpt_terms( $set['ID'] );
 	
 	// Create an array with key of taxonomy and values of terms
 	$taxonomies = array(
-		DFRPSWC_TAXONOMY	=> $ids,
+		DFRPSWC_TAXONOMY	=> $terms,
 		'product_tag' 		=> '',
 		'product_type' 		=> 'external',
 	);
 
 	// Then apply filters so users can override
 	$taxonomies = apply_filters( 'dfrpswc_filter_taxonomy_array', $taxonomies, $post, $product, $set, $action );
-
+	
+	// Remove 'product_tag' from array if value is empty.
+	if ( empty( $taxonomies['product_tag'] ) ) {
+		unset( $taxonomies['product_tag'] );
+	}
+	
 	// Then iterate over the array using wp_set_post_terms()
 	foreach ( $taxonomies as $taxonomy => $terms ) {
-		$append = ( $taxonomy == DFRPSWC_TAXONOMY ) ? true : false;
-		wp_set_post_terms( $post['ID'], $terms, $taxonomy, $append );
+		$append = ( $taxonomy == DFRPSWC_TAXONOMY ) ? TRUE : FALSE;
+		$result = wp_set_post_terms( $post['ID'], $terms, $taxonomy, $append );
 	}
 }
 
@@ -549,7 +591,7 @@ function dfrpswc_update_attributes( $post, $product, $set, $action ) {
 		
 		foreach ( $attributes as $attribute ) {
 		
-			if ( $attribute['is_taxonomy'] ) {
+			if ( isset( $attribute['is_taxonomy'] ) ) {
 				continue;
 			}
 
@@ -562,7 +604,7 @@ function dfrpswc_update_attributes( $post, $product, $set, $action ) {
 			$variation = 0;
 
 			// Get value.
-			$value = $attribute['value'];
+			$value = ( isset( $attribute['value'] ) ) ? $attribute['value'] : '';
 						
 			$attrs['attribute_names'][$i] 		= $attribute_name;
 			$attrs['attribute_is_taxonomy'][$i] = 0;
@@ -774,7 +816,7 @@ function dfrpswc_save_attributes( $post_id, $dfrpswc_attributes ) {
  * Delete (move to Trash) all products which were "stranded" after the update.
  * Strandad means they no longer have a Product Set ID associated with them.
  */
-add_action( 'dfrps_postprocess', 'dfrpswc_delete_stranded_products' );
+add_action( 'dfrps_postprocess-' . DFRPSWC_POST_TYPE, 'dfrpswc_delete_stranded_products' );
 function dfrpswc_delete_stranded_products( $obj ) {
 
 	$config = (array) get_option( 'dfrps_configuration' );
@@ -970,20 +1012,6 @@ MISCELLANEOUS FUNCTIONS
 *******************************************************************/
 
 /**
- * This removes this Product Set from this importers taxonomy.
- * 
- * TODO - Not fully tested.  Not yet active.
- * Added 1.0.16.
- */
-// add_action( 'save_post', 'dfrpswc_unset_product_set_taxonomy', 9999 );
-function dfrpswc_unset_product_set_taxonomy( $post_id ) {
-	$type = get_post_type( $post_id );
-	if ( $type == DFRPS_CPT ) {
-		wp_delete_object_term_relationships( $post_id, DFRPSWC_TAXONOMY );
-	}
-}
-
-/**
  * Returns true if product was imported by this plugin (Datafeedr WooCommerce Importer)
  */
 function dfrpswc_is_dfrpswc_product( $product_id ) {
@@ -999,7 +1027,6 @@ function dfrpswc_is_dfrpswc_product( $product_id ) {
  */
 function dfrpswc_add_attribute( $product, $attributes, $field, $taxonomy, $is_taxonomy, $position=1, $is_visible=1, $is_variation=0 ) {
 	if ( isset( $product[$field] ) && ( $product[$field] != '' ) ) {
-		// @TODO - add filter for $product[$field] here.
 		$attributes[$taxonomy] = array(
 			'name' 			=> $taxonomy,
 			'value' 		=> $product[$field],

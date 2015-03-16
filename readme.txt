@@ -5,8 +5,8 @@ Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.1
-Stable tag: 1.0.16
+Tested up to: 4.1.1
+Stable tag: 1.2.0
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -38,7 +38,7 @@ A short video demonstrating the Datafeedr WooCommerce Importer plugin.
 
 * **30+ Affiliate Networks** - Choose from the largest affiliate networks. (See full list below.)
 
-* **21 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, India, Italy, Netherlands, New Zealand, Norway, Poland, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
+* **19 Countries** - Import products from Australia, Belgium, Brazil, Canada, Denmark, Finland, France, Germany, Ireland, India, Italy, Netherlands, New Zealand, Norway, Spain, Sweden, Switzerland, Turkey, the United Kingdom & the United States.
 
 * **Unlimited Websites** - Import products into as many websites as you want.
 
@@ -107,12 +107,13 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 
 1. **Adrecord** (SE)
 1. **Adtraction** (DK, FI, NO, SE)
-1. **Affiliate4You** (NL)
 1. **Affiliate Window** (UK, US)
+1. **Affiliate4You** (NL)
+1. **Affiliator** (SE)
 1. **Affilinet** (DE, ES, FR, NL, UK)
-1. **Amazon Local** (US)
 1. **Avangate** (US)
 1. **AvantLink** (CA, US)
+1. **Amazon Local** (US)
 1. **belboon** (DE, FR, NL, UK)
 1. **Betty Mills** (US)
 1. **ClickBank** (US)
@@ -134,10 +135,10 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **RevResponse** (US)
 1. **ShareASale** (US)
 1. **SuperClix** (DE)
-1. **TradeDoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, PL, SE, UK)
-1. **TradeTracker** (BE, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, UK)
+1. **Tradedoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, SE, UK)
+1. **TradeTracker** (BE, DE, DK, ES, FI, FR, IT, NL, NO, SE, UK)
 1. **Webgains** (DE, ES, FR, IR, NL, NO, SE, UK, US)
-1. **Zanox** (AU, BE, BR, CH, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, TR)
+1. **Zanox** (AU, BE, BR, CH, DE, DK, ES, FI, FR, IT, NL, NO, SE, TR)
 
 = Requirements =
 In order to use the Datafeedr WooCommerce Importer plugin you'll need a few things:
@@ -147,7 +148,7 @@ In order to use the Datafeedr WooCommerce Importer plugin you'll need a few thin
 * [Datafeedr Product Sets](http://wordpress.org/plugins/datafeedr-product-sets/) (free)
 * [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (paid)
 * An account with 1 or more of the supported affiliate networks.
-* PHP's `CURL` support must be enabled.
+* PHP's `allow_url_fopen` must be `On`.
 * WordPress Cron enabled.
 * 64MB of memory ([instructions](http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP)).
 
@@ -166,7 +167,7 @@ In order to use the Datafeedr WooCommerce Importer plugin you'll need a few thin
 * [Datafeedr Product Sets](http://wordpress.org/plugins/datafeedr-product-sets/) (free)
 * [Datafeedr API account](https://v4.datafeedr.com/pricing?p=1&utm_campaign=dfrpswcplugin&utm_medium=referral&utm_source=wporg) (paid)
 * An account with 1 or more of the supported affiliate networks.
-* PHP's `CURL` support must be enabled.
+* PHP's `allow_url_fopen` must be `On`.
 * WordPress Cron enabled.
 * 64MB of memory ([instructions](http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP)).
 
@@ -191,8 +192,10 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 
 == Changelog ==
 
-= 1.0.16 =
-* Just updating readme.
+= 1.2.0 - 2015-03-16 =
+* Readied plugin for additional CPT support (#9167).
+* Modified pre and post processes to only handle a single CPT (ie. product), not multiple.
+* Requires Datafeedr Product Sets plugin version 1.2.0.
 
 = 1.0.15 =
 * Renamed "mycode_add_brand_attribute" filter to "dfrpswc_add_brand_attribute".
