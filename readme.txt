@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
 Tested up to: 4.2-beta2
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -191,7 +191,7 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 
 == Changelog ==
 
-= 1.2.1 - 2015/03/?? =
+= 1.2.1 - 2015/03/24 =
 * Readied plugin for term splitting (#10700). Read more here: https://make.wordpress.org/core/2015/02/16/taxonomy-term-splitting-in-4-2-a-developer-guide/
 * Removed extra p tags from admin notices.
 * Added new 'dfrpswc_process_stranded_product' filter to allow user to override the wp_trash_post() function for trashing/deleting stranded products.

@@ -7,8 +7,8 @@ Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 4.1.1
-Version: 1.2.0
+Tested up to: 4.2-beta1
+Version: 1.2.1
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.2.0' );
+define( 'DFRPSWC_VERSION', 		'1.2.1' );
 define( 'DFRPSWC_DB_VERSION', 	'1.2.0' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
@@ -58,17 +58,17 @@ add_action( 'admin_notices', 'dfrpswc_missing_required_plugins' );
 function dfrpswc_missing_required_plugins() {
 	
 	if ( !defined( 'DFRPS_BASENAME' ) ) {
-		echo '<div class="update-nag" style="border-color: red;"><p>' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>Datafeedr Product Sets</strong> plugin be installed and activated.', DFRPSWC_DOMAIN );
+		echo '<div class="update-nag" style="border-color: red;">' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>Datafeedr Product Sets</strong> plugin be installed and activated.', DFRPSWC_DOMAIN );
 		echo ' <a href="http://wordpress.org/plugins/datafeedr-product-sets/">';
 		echo  __( 'Download the Datafeedr Product Sets Plugin', DFRPSWC_DOMAIN );
-		echo '</a></p></div>';
+		echo '</a></div>';
 	}
 	
 	if ( !class_exists( 'Woocommerce' ) ) {
-		echo '<div class="update-nag" style="border-color: red;"><p>' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>WooCommerce</strong> (v2.1+) plugin be installed and activated.', DFRPSWC_DOMAIN );
+		echo '<div class="update-nag" style="border-color: red;">' . __( 'The <strong>Datafeedr WooCommerce Importer</strong> plugin requires that the <strong>WooCommerce</strong> (v2.1+) plugin be installed and activated.', DFRPSWC_DOMAIN );
 		echo ' <a href="http://wordpress.org/plugins/woocommerce/">';
 		echo  __( 'Download the WooCommerce Plugin', DFRPSWC_DOMAIN );
-		echo '</a></p></div>';
+		echo '</a></div>';
 	}
 }
 
@@ -78,9 +78,9 @@ function dfrpswc_missing_required_plugins() {
 add_action( 'admin_notices', 'dfrpswc_settings_updated' );	
 function dfrpswc_settings_updated() {
 	if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true && isset( $_GET['page'] ) && 'dfrpswc_options' == $_GET['page'] ) {
-		echo '<div class="updated"><p>';
+		echo '<div class="updated">';
 		_e( 'Configuration successfully updated!', DFRPSWC_DOMAIN );
-		echo '</p></div>';
+		echo '</div>';
 	}
 }
 
@@ -820,18 +820,19 @@ add_action( 'dfrps_postprocess-' . DFRPSWC_POST_TYPE, 'dfrpswc_delete_stranded_p
 function dfrpswc_delete_stranded_products( $obj ) {
 
 	$config = (array) get_option( 'dfrps_configuration' );
-	
+
 	// Should we even delete missing products?
 	if ( isset( $config['delete_missing_products'] ) && ( $config['delete_missing_products'] == 'no' ) ) {
-		update_post_meta( $obj->set['ID'], '_dfrps_postprocess_complete_' . DFRPSWC_POST_TYPE, true );		
+		update_post_meta( $obj->set['ID'], '_dfrps_postprocess_complete_' . DFRPSWC_POST_TYPE, true );
+
 		return;
 	}
 
 	// If trashable posts are already set for this Set['ID'], then just return.
 	$trashable_posts = get_option( 'trashable_posts_for_set_' . $obj->set['ID'] );
-	 
+
 	// If we've not run the SQL to get trashable posts, do so now.
-	if ( !$trashable_posts && !dfrpswc_process_complete( 'postprocess', $obj->set['ID'] ) ) {
+	if ( ! $trashable_posts && ! dfrpswc_process_complete( 'postprocess', $obj->set['ID'] ) ) {
 	
 		global $wpdb;
 	
@@ -859,19 +860,35 @@ function dfrpswc_delete_stranded_products( $obj ) {
 			update_post_meta( $obj->set['ID'], '_dfrps_postprocess_complete_' . DFRPSWC_POST_TYPE, true );
 			update_post_meta( $obj->set['ID'], '_dfrps_cpt_last_update_num_products_deleted', count( $post_ids ) );
 			return;
-		}		
-		
+		}
+
 		$trashable_posts = $post_ids;
 		add_option( 'trashable_posts_for_set_' . $obj->set['ID'], $post_ids, '', 'no' );
 		update_post_meta( $obj->set['ID'], '_dfrps_cpt_last_update_num_products_deleted', count( $post_ids ) );
 	}
-	
-	if ( is_array( $trashable_posts ) && !empty( $trashable_posts ) ) {
+
+	if ( is_array( $trashable_posts ) && ! empty( $trashable_posts ) ) {
+
+		/**
+		 * The function to pass the post ID to when it is no longer in the store (ie. deleted, trashed).
+		 *
+		 * Default is wp_trash_post().
+		 *
+		 * We use a filter here instead of an action because if a do_action was used within the foreach()
+		 * then the post (ie. $id) could possibly be put through multiple actions, causing too much unnecessary load
+		 * during an already intense process.
+		 * By applying a filter to the function name, we guarantee that the $id will only be passed
+		 * through to one function. Also, we don't make multiple calls to apply_filters() or do_action()
+		 * from within the foreach() loop. Keep it outside of the loop to prevent more than one
+		 * call to apply_filters().
+		 */
+		$func = apply_filters( 'dfrpswc_process_stranded_product', 'wp_trash_post' );
+
 		$ids = array_slice( $trashable_posts, 0, $config['postprocess_maximum'] );
 		foreach ( $ids as $id ) {
-			wp_trash_post( $id );
+			$func( $id );
 			if ( ( $key = array_search( $id, $trashable_posts ) ) !== false ) {
-				unset( $trashable_posts[$key] );
+				unset( $trashable_posts[ $key ] );
 			}
 		}
 	}
@@ -1090,3 +1107,55 @@ function dfrpswc_action_links( $links ) {
 	);
 }
 
+/**
+ * When a term is split, ensure postmeta for Product Set is maintained.
+ *
+ * Whenever a term is edited, this function loops through all postmeta values of '_dfrps_cpt_terms' and looks for any
+ * old term_ids. If they exist, the '_dfrps_cpt_terms' is updated with the new term_id.
+ *
+ * This only happens when a shared term is updated (eg, when its name is updated in the Dashboard).
+ *
+ * @since 1.2.1
+ *
+ * @link https://make.wordpress.org/core/2015/02/16/taxonomy-term-splitting-in-4-2-a-developer-guide/
+ *
+ * @param  int    $old_term_id The old term ID to search for.
+ * @param  int    $new_term_id The new term ID to replace the old one with.
+ * @param  int    $term_obj_taxonomy_id The term's tax ID.
+ * @param  string $taxonomy The corresponding taxonomy.
+ */
+add_action( 'split_shared_term', 'dfrpswc_update_terms_for_split_terms', 20, 4 );
+function dfrpswc_update_terms_for_split_terms( $old_term_id, $new_term_id, $term_obj_taxonomy_id, $taxonomy ) {
+
+	if ( $taxonomy !== 'product_cat' ) {
+		return true;
+	}
+
+	global $wpdb;
+
+	$current_cpt_terms = $wpdb->get_results( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = '_dfrps_cpt_terms'" );
+
+	if ( empty( $current_cpt_terms ) ) {
+		return true;
+	}
+
+	foreach ( $current_cpt_terms as $item => $term_obj ) {
+
+		$current_meta_value = maybe_unserialize( $term_obj->meta_value );
+
+		if ( in_array( $old_term_id, $current_meta_value ) ) {
+
+			// @link http://stackoverflow.com/a/8668861
+			$new_meta_value = array_replace(
+				$current_meta_value,
+				array_fill_keys(
+					array_keys( $current_meta_value, $old_term_id ),
+					$new_term_id
+				)
+			);
+
+			update_post_meta( $term_obj->post_id, '_dfrps_cpt_terms', $new_meta_value );
+
+		}
+	}
+}
