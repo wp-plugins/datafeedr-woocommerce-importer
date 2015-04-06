@@ -5,8 +5,8 @@ Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.2-beta2
-Stable tag: 1.2.1
+Tested up to: 4.2-beta4
+Stable tag: 1.2.2
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -190,6 +190,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.2.2 - 2015/04/06 =
+* Added new 128x128 and 256x256 plugin icons.
 
 = 1.2.1 - 2015/03/24 =
 * Readied plugin for term splitting (#10700). Read more here: https://make.wordpress.org/core/2015/02/16/taxonomy-term-splitting-in-4-2-a-developer-guide/

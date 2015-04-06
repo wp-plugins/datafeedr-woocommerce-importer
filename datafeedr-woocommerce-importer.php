@@ -7,8 +7,8 @@ Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 4.2-beta1
-Version: 1.2.1
+Tested up to: 4.2-beta4
+Version: 1.2.2
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - eric@datafeedr.com
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', 		'1.2.1' );
+define( 'DFRPSWC_VERSION', 		'1.2.2' );
 define( 'DFRPSWC_DB_VERSION', 	'1.2.0' );
 define( 'DFRPSWC_URL', 			plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', 		plugin_dir_path( __FILE__ ) );
