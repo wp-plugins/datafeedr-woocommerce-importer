@@ -1,13 +1,18 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+/**
+ * Exit if accessed directly
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * BEGIN
- * 
+ *
  * Get previous version stored in database.
  */
-$previous_version = get_option( 'dfrpswc_version', FALSE );
+$previous_version = get_option( 'dfrpswc_version', false );
 
 
 /**
@@ -15,10 +20,9 @@ $previous_version = get_option( 'dfrpswc_version', FALSE );
  */
 
 
-
 /**
  * END
- * 
+ *
  * Now that any upgrade functions are performed, update version in database.
  */
 update_option( 'dfrpswc_version', DFRPSWC_VERSION );

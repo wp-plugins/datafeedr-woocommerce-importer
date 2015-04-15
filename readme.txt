@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
 Tested up to: 4.2-beta4
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -190,6 +190,11 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.2.3 - 2015/04/15 =
+* Re-wrote dfrpswc_unset_post_categories() function to store post IDs to be processed in a temp table instead of in the *_options table.
+* Re-wrote dfrpswc_delete_stranded_products() function to store post IDs to be processed in a temp table instead of in the *_options table.
+* Refactored all code to match WP's PHP Coding Standards as best as possible.
 
 = 1.2.2 - 2015/04/06 =
 * Added new 128x128 and 256x256 plugin icons.
