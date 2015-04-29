@@ -5,8 +5,8 @@ Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.2
-Stable tag: 1.2.3
+Tested up to: 4.3-alpha
+Stable tag: 1.2.4
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -190,6 +190,14 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.2.4 - 2015/04/29 =
+* Removed esc_like() function when doing 'SHOW TABLES LIKE' query.
+* Added new 'uid' column to temp tables. (#10866)
+* Added uniqid() to temp tables to avoid race conditions during updates. (#10866)
+* Added code to avoid flushing W3TC cache during each product import/update.
+* Added call to array_unique() 'trashable posts' function to avoid post ID duplication.
+* Added cache bypassing functions when getting transients. (#10866)
 
 = 1.2.3 - 2015/04/15 =
 * Re-wrote dfrpswc_unset_post_categories() function to store post IDs to be processed in a temp table instead of in the *_options table.

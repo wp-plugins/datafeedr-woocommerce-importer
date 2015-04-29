@@ -7,8 +7,8 @@ Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 4.2
-Version: 1.2.3
+Tested up to: 4.3-alpha
+Version: 1.2.4
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - help@datafeedr.com
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', '1.2.3' );
+define( 'DFRPSWC_VERSION', '1.2.4' );
 define( 'DFRPSWC_DB_VERSION', '1.2.0' );
 define( 'DFRPSWC_URL', plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', plugin_dir_path( __FILE__ ) );
@@ -325,7 +325,7 @@ function dfrpswc_unset_post_categories( $obj ) {
 	 *  - Insert all post IDs into table.
 	 */
 	$table_name = $wpdb->prefix . 'dfrpswc_temp_post_ids_by_set_id';
-	$query      = $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->esc_like( $table_name ) );
+	$query = $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name );
 	if ( $wpdb->get_var( $query ) != $table_name ) {
 
 		// Create the temp table to store the post IDs.
@@ -342,12 +342,17 @@ function dfrpswc_unset_post_categories( $obj ) {
 	 * Get X ($limit) number of records to process where X is $config['preprocess_maximum'].
 	 * Also get the $total number of posts in this table. This will be used to
 	 * determine if we must repeat the 'dfrps_preprocess' action or not.
+	 *
+	 * The uniqid() part is related to ticket #10866 .
 	 */
 	$config = (array) get_option( 'dfrps_configuration' );
 	$limit  = ( isset( $config['preprocess_maximum'] ) ) ? intval( $config['preprocess_maximum'] ) : 100;
-	$sql    = "SELECT SQL_CALC_FOUND_ROWS post_id FROM $table_name ORDER BY post_id ASC LIMIT " . $limit;
-	$posts  = $wpdb->get_results( $sql, OBJECT );
-	$total  = intval( $wpdb->get_var( 'SELECT FOUND_ROWS()' ) );
+
+	$uid = uniqid();
+	$wpdb->query( "UPDATE $table_name SET uid='$uid' WHERE uid='' ORDER BY post_id ASC LIMIT " . $limit );
+
+	$sql   = "SELECT post_id FROM $table_name WHERE uid='$uid' ORDER BY post_id ASC";
+	$posts = $wpdb->get_results( $sql, OBJECT );
 
 	/**
 	 * If $posts is empty, then:
@@ -393,21 +398,7 @@ function dfrpswc_unset_post_categories( $obj ) {
 	 * Now we delete this set of post IDs from the table. This ensures
 	 * that we don't process them again.
 	 */
-	$wpdb->query( "DELETE FROM $table_name ORDER BY post_id ASC LIMIT " . $limit );
-
-	/**
-	 * Next, we check if $limit >= $total. If it is, that means there are no more
-	 * post IDs in our table so we don't need to preprocess anymore. So...
-	 *  - Set _dfrps_preprocess_complete_ to true.
-	 *  - DROP the new table.
-	 *  - return.
-	 */
-	if ( $limit >= $total ) {
-		update_post_meta( $obj->set['ID'], '_dfrps_preprocess_complete_' . DFRPSWC_POST_TYPE, true );
-		dfrpswc_drop_temp_post_ids_table( $table_name );
-
-		return true;
-	}
+	$wpdb->query( "DELETE FROM $table_name WHERE uid='$uid'" );
 
 }
 
@@ -429,6 +420,9 @@ function dfrpswc_do_products( $data, $set ) {
 		// Get post if it already exists.
 		$existing_post = dfrps_get_existing_post( $product, $set );
 
+		// Disable W3TC's caching while processing products.
+		add_filter( 'w3tc_flushable_post', '__return_false', 20, 3 );
+
 		// Determine what to do based on if post exists or not.
 		if ( $existing_post && $existing_post['post_type'] == DFRPSWC_POST_TYPE ) {
 			$action = 'update';
@@ -445,6 +439,7 @@ function dfrpswc_do_products( $data, $set ) {
 			dfrpswc_update_attributes( $post, $product, $set, $action );
 			do_action( 'dfrpswc_do_product', $post, $product, $set, $action );
 		}
+
 	}
 }
 
@@ -924,7 +919,7 @@ function dfrpswc_delete_stranded_products( $obj ) {
 	 *  - Insert all post IDs into table.
 	 */
 	$table_name = $wpdb->prefix . 'dfrpswc_temp_trashable_posts';
-	$query      = $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->esc_like( $table_name ) );
+	$query = $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name );
 	if ( $wpdb->get_var( $query ) != $table_name ) {
 
 		// Create the temp table to store the post IDs.
@@ -956,6 +951,7 @@ function dfrpswc_delete_stranded_products( $obj ) {
 		foreach ( $trashable_posts as $trashable_post ) {
 			$ids[] = $trashable_post['post_id'];
 		}
+		$ids = array_unique( $ids );
 
 		$ids = dfrpswc_insert_ids_into_temp_table( $ids, $table_name );
 
@@ -977,9 +973,12 @@ function dfrpswc_delete_stranded_products( $obj ) {
 	 * determine if we must repeat the 'dfrps_postprocess' action or not.
 	 */
 	$limit = ( isset( $config['postprocess_maximum'] ) ) ? intval( $config['postprocess_maximum'] ) : 100;
-	$sql   = "SELECT SQL_CALC_FOUND_ROWS post_id FROM $table_name ORDER BY post_id ASC LIMIT " . $limit;
+
+	$uid = uniqid();
+	$wpdb->query( "UPDATE $table_name SET uid='$uid' WHERE uid='' ORDER BY post_id ASC LIMIT " . $limit );
+
+	$sql   = "SELECT post_id FROM $table_name WHERE uid='$uid' ORDER BY post_id ASC";
 	$posts = $wpdb->get_results( $sql, OBJECT );
-	$total = intval( $wpdb->get_var( 'SELECT FOUND_ROWS()' ) );
 
 	/**
 	 * If $posts is empty, then:
@@ -1019,21 +1018,8 @@ function dfrpswc_delete_stranded_products( $obj ) {
 	 * Now we delete this set of post IDs from the table. This ensures
 	 * that we don't process them again.
 	 */
-	$wpdb->query( "DELETE FROM $table_name ORDER BY post_id ASC LIMIT " . $limit );
+	$wpdb->query( "DELETE FROM $table_name WHERE uid='$uid'" );
 
-	/**
-	 * Next, we check if $limit >= $total. If it is, that means there are no more
-	 * post IDs in our table so we don't need to postprocess anymore. So...
-	 *  - Set _dfrps_postprocess_complete_ to true.
-	 *  - DROP the new table.
-	 *  - return.
-	 */
-	if ( $limit >= $total ) {
-		update_post_meta( $obj->set['ID'], '_dfrps_postprocess_complete_' . DFRPSWC_POST_TYPE, true );
-		dfrpswc_drop_temp_post_ids_table( $table_name );
-
-		return true;
-	}
 }
 
 /**
@@ -1051,7 +1037,9 @@ function dfrpswc_update_complete( $set ) {
 	$product_tags = get_terms( DFRPSWC_TAXONOMY, array( 'hide_empty' => false, 'fields' => 'id=>parent' ) );
 	_wc_term_recount( $product_tags, get_taxonomy( DFRPSWC_TAXONOMY ), true, false );
 
+	$use_cache = wp_using_ext_object_cache( false );
 	delete_transient( 'wc_term_counts' );
+	wp_using_ext_object_cache( $use_cache );
 } 
 
 
@@ -1325,12 +1313,14 @@ function dfrpswc_update_terms_for_split_terms( $old_term_id, $new_term_id, $term
 function dfrpswc_create_temp_post_ids_table( $table_name ) {
 	global $wpdb;
 	$charset_collate = $wpdb->get_charset_collate();
-	$sql             = "
-		CREATE TABLE IF NOT EXISTS $table_name
-		(
-			post_id bigint(20) unsigned NOT NULL,
-			PRIMARY KEY  (post_id)
-		) $charset_collate ";
+
+	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
+ 			post_id bigint(20) unsigned NOT NULL,
+ 			uid varchar(13) NOT NULL default '',
+ 			PRIMARY KEY  (post_id),
+ 			KEY uid (uid)
+	) $charset_collate;";
+
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
 }
