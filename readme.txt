@@ -1,11 +1,11 @@
 === Datafeedr WooCommerce Importer ===
 
 Contributors: datafeedr.com
-Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, avantlink, amazon local, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, dgm, flipkart, impact radius, import, linkconnector, linkshare, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, mycommerce, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
+Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, APD, avantlink, amazon local, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, flipkart, impact radius, import, linkconnector, linkshare, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, mycommerce, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.3-alpha
+Tested up to: 4.3-beta
 Stable tag: 1.2.4
 
 Import products from the Datafeedr API into your WooCommerce store.
@@ -111,6 +111,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Affiliate Window** (UK, US)
 1. **Affilinet** (DE, ES, FR, NL, UK)
 1. **Amazon Local** (US)
+1. **APD** (AU)
 1. **Avangate** (US)
 1. **AvantLink** (CA, US)
 1. **belboon** (DE, FR, NL, UK)
@@ -120,7 +121,6 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **Commission Factory** (AU)
 1. **Commission Junction** (DE, SE, UK, US)
 1. **Daisycon** (BE, DE, FR, NL)
-1. **DGM** (AU)
 1. **Double.net** (SE)
 1. **FlipKart** (IN)
 1. **Impact Radius** (US)
