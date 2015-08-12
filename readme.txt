@@ -1,12 +1,12 @@
 === Datafeedr WooCommerce Importer ===
 
 Contributors: datafeedr.com
-Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, APD, avantlink, amazon local, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, flipkart, impact radius, import, linkconnector, linkshare, onenetworkdirect, paid on results, partner-ads, pepperjam, popshops, premiumpress, mycommerce, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
+Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you, affilinet, avangate, APD, avantlink, amazon local, belboon, cj, clickbank, commission factory, commission junction, csv, daisycon, data feed, datafeed, datafeeder, datafeedr, dfrapi, dfrps, dfrpsimporter, dfrpswc, flipkart, impact radius, import, linkconnector, linkshare, onenetworkdirect, optimise, paid on results, partner-ads, pepperjam, popshops, premiumpress, mycommerce, revresponse, sellfire, shareasale, shopperpress, superclix, tradedoubler, tradetracker, webgains, woocommerce, wpallimport, xml, zanox
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.3-beta
-Stable tag: 1.2.4
+Tested up to: 4.3
+Stable tag: 1.2.5
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -128,6 +128,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **LinkShare** (AU, UK, US)
 1. **MyCommerce** (US)
 1. **oneNetworkDirect** (DE, UK, US)
+1. **Optimise** (IN)
 1. **Paid On Results** (UK)
 1. **Partner-ads** (DK)
 1. **PepperJam** (US)
@@ -190,6 +191,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.2.5 - 2015/08/12 =
+* Added new function `dfrpswc_normalize_terms()` to help with normalizing attribute terms.
 
 = 1.2.4 - 2015/04/29 =
 * Removed esc_like() function when doing 'SHOW TABLES LIKE' query.

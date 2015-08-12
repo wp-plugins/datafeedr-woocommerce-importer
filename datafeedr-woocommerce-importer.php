@@ -7,8 +7,8 @@ Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 4.3-beta
-Version: 1.2.4
+Tested up to: 4.3
+Version: 1.2.5
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - help@datafeedr.com
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', '1.2.4' );
+define( 'DFRPSWC_VERSION', '1.2.5' );
 define( 'DFRPSWC_DB_VERSION', '1.2.0' );
 define( 'DFRPSWC_URL', plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', plugin_dir_path( __FILE__ ) );
@@ -1396,5 +1396,44 @@ function dfrpswc_insert_ids_into_temp_table( $ids, $table_name ) {
 	$wpdb->query( $q );
 
 	return $ids;
+
+}
+
+/**
+ * Normalize attribute terms.
+ *
+ * This returns a normalized value of a term based on a supplied
+ * array mappings of a key (desired word) mapped to an array of
+ * keywords (undesired words).
+ *
+ * @since 1.2.5
+ *
+ * @param array   $map An array which maps a (desired) key to an array of (undesired) keywords.
+ * @param string  $field The field which to normalize.
+ * @param boolean $match_key Optional. Boolean value letting us compare the $field against the $map key value.
+ *
+ * @return string Returns the normalized term to use for this attribute.
+ */
+function dfrpswc_normalize_terms( $map, $field, $match_key = true ) {
+
+	// Loop through $map, searching for $field in $map key or in $map keywords.
+	foreach ( $map as $key => $keywords ) {
+
+		// Check if the $map key matches the field. If so, return $key.
+		if ( $match_key && stripos( $field, $key ) !== false ) {
+			return $key;
+		}
+
+		// Search for $field in keywords of $map array.
+		foreach ( $keywords as $keyword ) {
+			if ( stripos( $field, $keyword ) !== false ) {
+				return $key;
+			}
+		}
+	}
+
+	// User has not defined a specific word to use for
+	// this $field so just return the raw $field value.
+	return $field;
 
 }
