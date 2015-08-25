@@ -5,8 +5,8 @@ Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.3
-Stable tag: 1.2.5
+Tested up to: 4.4-alpha
+Stable tag: 1.2.6
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -191,6 +191,9 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.2.6 - 2015/08/25 =
+* Removed new `dfrpswc_normalize_terms()` function. It's more useful added on a case by case basis.
 
 = 1.2.5 - 2015/08/12 =
 * Added new function `dfrpswc_normalize_terms()` to help with normalizing attribute terms.
