@@ -7,8 +7,8 @@ Author: datafeedr.com
 Author URI: https://v4.datafeedr.com
 License: GPL v3
 Requires at least: 3.8
-Tested up to: 4.4-alpha
-Version: 1.2.6
+Tested up to: 4.4-beta1
+Version: 1.2.7
 
 Datafeedr WooCommerce Importer plugin
 Copyright (C) 2014, Datafeedr - help@datafeedr.com
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Define constants.
  */
-define( 'DFRPSWC_VERSION', '1.2.6' );
+define( 'DFRPSWC_VERSION', '1.2.7' );
 define( 'DFRPSWC_DB_VERSION', '1.2.0' );
 define( 'DFRPSWC_URL', plugin_dir_url( __FILE__ ) );
 define( 'DFRPSWC_PATH', plugin_dir_path( __FILE__ ) );
@@ -646,7 +646,7 @@ function dfrpswc_update_attributes( $post, $product, $set, $action ) {
 		
 		foreach ( $attributes as $attribute ) {
 
-			if ( isset( $attribute['is_taxonomy'] ) ) {
+			if ( 1 == intval( $attribute['is_taxonomy'] ) ) {
 				continue;
 			}
 

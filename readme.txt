@@ -5,8 +5,8 @@ Tags: adrecord, adtraction, affiliate marketing, affiliate window, affiliate4you
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.8
-Tested up to: 4.4-alpha
-Stable tag: 1.2.6
+Tested up to: 4.4-beta1
+Stable tag: 1.2.7
 
 Import products from the Datafeedr API into your WooCommerce store.
 
@@ -136,7 +136,7 @@ The Datafeedr WooCommerce Importer plugin currently supports over 12,000 merchan
 1. **ShareASale** (US)
 1. **SuperClix** (DE)
 1. **TradeDoubler** (BE, CH, DE, DK, ES, FI, FR, IR, IT, NL, NO, PL, SE, UK)
-1. **TradeTracker** (BE, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, UK)
+1. **TradeTracker** (AT, BE, CH, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, UK)
 1. **Webgains** (DE, ES, FR, IR, NL, NO, SE, UK, US)
 1. **Zanox** (AU, BE, BR, CH, DE, DK, ES, FI, FR, IT, NL, NO, PL, SE, TR)
 
@@ -191,6 +191,10 @@ Our support area can be found here: [https://v4.datafeedr.com/support](https://v
 2. General settings
 
 == Changelog ==
+
+= 1.2.7 - 2015/10/26 =
+* Added TradeTracker Austria and TradeTracker Switzerland support.
+* Fixed "is_taxonomy" conditional in dfrpswc_update_attributes() function. 
 
 = 1.2.6 - 2015/08/25 =
 * Removed new `dfrpswc_normalize_terms()` function. It's more useful added on a case by case basis.
